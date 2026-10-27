@@ -27,9 +27,7 @@ Esta primera iteración contiene la primera versión del prototipo del sistema. 
 - Microcontrolador: Micro SD
 - Sensores:
   - ADS1115
-- Actuadores:
-  - [Actuador 1]
-- Otros: [Lista]
+  - Sensor transformador de corriente
 
 ### Software
 - IDE: Arduino esp32 cp210
@@ -75,9 +73,6 @@ La tarjeta de memoria dejaría de ser útil si cambiamos el servidor de local, a
 ## Plan para Iteración 2
 
 ### Mejoras Planificadas
-
-**Hardware:**
-- [ ] 
 
 **Software:**
 - [ ] Utilizar nube como repositorio de datos (Firebase)
