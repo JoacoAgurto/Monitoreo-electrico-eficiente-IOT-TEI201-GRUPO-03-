@@ -38,15 +38,6 @@ Esta primera iteración contiene la primera versión del prototipo del sistema. 
 
 ---
 
-## Fotos del Prototipo
-
-Incluir en esta carpeta:
-- `v1_circuito_protoboard.jpg`
-- `v1_vista_general.jpg`
-- `v1_detalle_conexiones.jpg`
-
----
-
 ## Resultados de Testing Inicial
 
 ### Funcionalidad Lograda
@@ -82,11 +73,3 @@ La tarjeta de memoria dejaría de ser útil si cambiamos el servidor de local, a
 **Diseño:**
 - [ ] Iniciar diseño de encapsulado para tenerlo en formato físico
 
----
-
-## Archivos en esta Carpeta
-
-- `v1_codigo.ino` - Código de esta versión
-- `v1_esquema.png` - Esquema del circuito
-- `v1_fotos/` - Fotografías del prototipo
-- `v1_notas.txt` - Notas adicionales del equipo
