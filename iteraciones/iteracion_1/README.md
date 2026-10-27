@@ -28,10 +28,12 @@ Esta primera iteración contiene la primera versión del prototipo del sistema. 
 - Sensores:
   - ADS1115
   - Sensor transformador de corriente
+- 4 pinzas SCT-013 de 100 A / 1 V
 
 ### Software
 - IDE: Arduino esp32 cp210
 - Librerías: [Lista]
+- Servidor web Wi-Fi sin router
 - Versión código: v1.0
 
 ---
