@@ -24,7 +24,7 @@ Cada carpeta debe incluir:
 |---------|----|----|----| 
 | **Fecha** | [19/10/26] | [fecha] | [fecha] |
 | **Sensores** | [ADS1115 / Arduino esp32 cp210] | [lista] | [lista] |
-| **Actuadores** | [] | [lista] | [lista] |
+| **Actuadores** | [-] | [lista] | [lista] |
 | **Conectividad** | [local / WIFI] | [tipo] | [tipo] |
 | **Encapsulado** | Concepto visual | Prototipo | Finalizado |
 | **Testing** | Solo equipo | 2 usuarios | 5+ usuarios |
