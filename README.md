@@ -1,6 +1,6 @@
 ### Información del Equipo
 - **Integrantes:**
-  - Vasco Urrutia - Encargado de hardwarwe y software
+  - Vasco Urrutia - Encargado de hardware y software
   - Joaquín Agurto - Encargado de Documentación y Recopilado de Datos
   - Ignacio Mora - Encargado de modelado 3D
   
