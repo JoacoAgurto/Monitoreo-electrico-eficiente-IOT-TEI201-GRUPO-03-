@@ -83,6 +83,7 @@ Cada carpeta debe incluir:
 ### Software
 **De v1 a v2:**
 - Conexión a nube Supabase
+  
 **De v2 a v3:**
 - [Cambios principales]
 
