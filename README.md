@@ -13,9 +13,9 @@ Ayudar a hogares no considerados dentro del subsidio eléctrico en Chile, regula
 Un sistema de monitoreo eléctrico eficiente que lea la cantidad de energía utilizada para así transferir los datos a una página web / aplicación. Así, los usuarios podrán leer y entender fácilmente la cantidad de energía que están consumiendo la cantidad de gasto eléctrico para así tomar decisiones informadas para regular su consumo.
 
 ### Estado del Proyecto
-- **Versión actual:** v1.0
-- **Última actualización:** [5/10/2026]
-- **Estado:** Primer Prototipo
+- **Versión actual:** v2.0
+- **Última actualización:** [19/10/2026]
+- **Estado:** Mejorar primer Prototipo
 
 ---
 
