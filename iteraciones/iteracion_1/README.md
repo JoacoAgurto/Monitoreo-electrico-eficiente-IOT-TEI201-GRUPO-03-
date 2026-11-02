@@ -68,7 +68,7 @@ La tarjeta de memoria dejaría de ser útil si cambiamos el servidor de local, a
 ### Mejoras Planificadas
 
 **Software:**
-- [ ] Utilizar nube como repositorio de datos (Firebase)
+- [ ] Utilizar nube como repositorio de datos (Supabase)
 
 **Diseño:**
 - [ ] Iniciar diseño de encapsulado para tenerlo en formato físico
