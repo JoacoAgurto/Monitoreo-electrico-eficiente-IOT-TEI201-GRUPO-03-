@@ -49,7 +49,7 @@ Esta primera iteración contiene la primera versión del prototipo del sistema. 
 
 1. **Problema 1:**
 El problema principal es que el sistema no funciona se está midiendo en cable junto, sólo cuando es cables separados. Esto ocurre ya que al medir por cable junto, ambos cable anulan las ondas de electricidad medibles, y el sistema no leerá nada.
-   - Solución propuesta: [Plan]
+   - Solución propuesta: Encontrar manera en que el sistema reconozca bien cuando está enchufado o desconectado (puesto que el ruido ocurre en la desconexión)
 
 ---
 
