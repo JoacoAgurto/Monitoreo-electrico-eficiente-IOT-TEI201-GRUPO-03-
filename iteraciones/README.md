@@ -73,9 +73,7 @@ Cada carpeta debe incluir:
 
 ### Hardware
 **De v1 a v2:**
-- Cambio: [Descripción]
-- Razón: [Justificación técnica]
-- Impacto: [Mejora cuantitativa]
+- No hubo cambios de hardware, no era necesario
 
 **De v2 a v3:**
 - Cambio: [Descripción]
@@ -84,8 +82,7 @@ Cada carpeta debe incluir:
 
 ### Software
 **De v1 a v2:**
-- [Cambios principales]
-
+- Conexión a nube Supabase
 **De v2 a v3:**
 - [Cambios principales]
 
@@ -103,7 +100,7 @@ Cada carpeta debe incluir:
 ### Feedback del Avance #1 → Cambios en v2
 1. [Comentario profesor/ayudante]:
    - Utilizar un servidor global para garantizar un acceso al sistema de manera remota, facilitando su uso para el usuario en vez de estar en cercanía con el sistema montado en el protoboard. La importancia de esto para el usuario es que es capaz de saber la cantidad de energía que está consumiendo en su hogar cuando NO está en ella.
-   - Acción tomada: Usar Firebase
+   - Acción tomada: Usar Supabase
 
 ### Feedback del Avance #2 → Cambios en v3
 1. [Comentario profesor/ayudante]
@@ -119,10 +116,10 @@ Cada carpeta debe incluir:
 
 | Métrica | v1 | v2 | v3 | Mejora Total |
 |---------|----|----|----| -------------|
-| Tiempo respuesta (ms) | 500 | 200 | 100 | ↓80% |
-| Consumo (mA) | 250 | 180 | 120 | ↓52% |
-| Tasa de errores (%) | 15 | 5 | 1 | ↓93% |
-| Satisfacción usuario (1-5) | 3.0 | 3.8 | 4.5 | ↑50% |
+| Tiempo respuesta (ms) | - | - | - | - |
+| Consumo (mA) | - | - | - | - |
+| Tasa de errores (%) | - | - | - | - |
+| Satisfacción usuario (1-5) | - | - | - | - |
 
 ---
 
