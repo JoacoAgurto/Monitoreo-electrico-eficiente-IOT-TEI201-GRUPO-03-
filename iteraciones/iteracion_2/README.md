@@ -27,26 +27,20 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 **Agregado:**
 - [Componente nuevo 1]
 - [Componente nuevo 2]
+- (posiblemente tengamos que agregar cables)
 
 **Modificado:**
 - [Cambio 1] - Razón: [Justificación]
 - [Cambio 2] - Razón: [Justificación]
 
-**Removido:**
-- [Componente removido] - Razón: [Justificación]
-
 ### Software
-**Nuevas funcionalidades:**
-- [Feature 1]
-- [Feature 2]
-
-**Optimizaciones:**
-- [Optimización 1]
-- [Optimización 2]
 
 **Bugs corregidos:**
 - [Bug 1 de v1]
-- [Bug 2 de v1]
+- Railway presentó problemas para crear una cuenta, por lo cual se prefirio moverse a otra plataforma como Supabase
+
+**Mejora principal**
+- Conexión a nube Supabase
 
 ### Diseño Mecánico
 - Primer diseño de encapsulado en Fusion 360
