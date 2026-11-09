@@ -1,18 +1,14 @@
 # Diseño 3D - Documentación
 
-## ⚠️ REQUISITO CRÍTICO
+## Gemelo 3D
 
-El modelo 3D debe incluir **TODOS** los componentes del prototipo:
-- ✅ Encapsulado exterior completo
-- ✅ Placa ESP32/Arduino (con dimensiones exactas)
-- ✅ Todos los sensores en posición de instalación
-- ✅ Todos los actuadores
-- ✅ Batería / fuente de alimentación
-- ✅ Cableado (routing aproximado)
-- ✅ Sistema de montaje (brackets, tornillos)
-- ✅ Orificios de ventilación (si aplica)
-
-**NO ES ACEPTABLE:** Solo el encapsulado vacío sin componentes internos
+| Componente | Estado en el ejemplo |
+|---|---|
+| 1 (especificar cada pieza del hardware) | especificar posición y tamaño |
+| 2 |  |
+| 3 |  |
+| 4 |  |
+| 5 |  |
 
 ---
 
@@ -22,43 +18,32 @@ El modelo 3D debe incluir **TODOS** los componentes del prototipo:
 Archivos nativos de Fusion 360 (.f3d)
 
 #### `renders/`
-Imágenes renderizadas de alta calidad
+Imágenes del ensamble renderizadas de alta calidad
 
 #### `planos/`
-Planos técnicos con cotas
+Planos técnicos con vistas y cotas
 
 ---
 
 ## Especificaciones
 
-**Software:** Autodesk Fusion 360  
-**Unidades:** Milímetros (mm)  
-**Escala:** 1:1 (dimensiones reales)
-
-**Dimensiones externas:** [X mm × Y mm × Z mm]  
-**Peso estimado:** [XXX gramos]  
-**Material:** [PLA, ABS, PETG, etc.]
-
----
-
-## Consideraciones de Diseño
-
-### Funcionales
-- [ ] Acceso a puertos USB/alimentación
-- [ ] Ventilación adecuada
-- [ ] Protección de componentes
-- [ ] Fácil acceso para mantenimiento
-- [ ] Resistencia a condiciones ambientales
-
-### Fabricación
-- [ ] Imprimible sin soportes excesivos
-- [ ] Tolerancias de ensamble (+0.2mm)
-- [ ] Grosor de pared mínimo 2mm
-- [ ] Sin ángulos imposibles (overhangs <45°)
+| Dato | Valor |
+|---|---|
+| Software | Autodesk Fusion 360 |
+| Unidades | Milímetros |
+| Escala | 1 a 1 |
+| Dimensiones externas | 170 x 120 x 60 mm |
+| Material | PLA, pared de 2.4 mm |
+| Tolerancia | 0.2 mm general y 0.3 mm en el ajuste de la tapa |
 
 ---
 
-## Configuración de Impresión 3D (si fue utilizada)
+## Funcionalidad del Encapsulado
+- bla bla bla
+
+---
+
+## Configuración de Impresión 3D 
 
 **Impresora:** [Modelo]  
 **Material:** [PLA/ABS/PETG]  
