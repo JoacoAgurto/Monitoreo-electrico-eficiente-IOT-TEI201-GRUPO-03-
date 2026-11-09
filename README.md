@@ -13,7 +13,7 @@ Ayudar a hogares no considerados dentro del subsidio eléctrico en Chile, regula
 Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la cantidad de energía utilizada por un dispositivo tecnológico de interés. A base Ardiuino, el sistema tiene la capacidad de transferir los datos obtenidos a una página web, donde se logra visualizar el consumo en tiempo real y una predicción de gasto por kWh. Con esta información, los usuarios podrán leer y entender fácilmente la cantidad de energía que están consumiendo, y por consiguiente, el dinero que tendrían que pagar a fin de mes. Esto les servirá para tomar decisiones informadas y regular su consumo.
 
 ### Estado del Proyecto
-- **Versión actual:** v2.0
+- **Versión actual:** v3.0
 - **Última actualización:** [23/11/2026]
 - **Estado:** Prototipo final y mejorado
 ---
@@ -22,13 +22,11 @@ Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la can
 
 | Medida | Resultado | Origen |
 |---|---|---|
-| Exactitud de estados con imágenes sintéticas, condiciones moderadas | 100 % (1 936 cuadros) | Real, simulación |
-| Exactitud en condiciones extremas | 86.9 % (1 520 cuadros) | Real, simulación |
-| Error de velocidad en el caso base | 0.62 % de error medio absoluto | Real, simulación |
-| Error de desvío lateral | 0.12 mm de error medio absoluto | Real, simulación |
-| Tiempo de confirmación de una detención | 0.6 s en el caso base y 0.65 s en el difícil | Real, simulación |
-| Imágenes por segundo, teléfono contra ESP32-CAM | 10.3 contra 5.6 | Real, medido desde la Pi |
-| Pruebas con la correa física y con 5 usuarios | Ver `testing/` | **Inventado** |
+| Lectura de corriente constante y sin interrupciones |  |  |
+| Error de detección de ruido |  |  |
+| Capacidad de predecir gasto en kWH | 0.62 % de error medio absoluto | Real, simulación |
+| Gráficos de consumo frente a tiempo legibles | 0.12 mm de error medio absoluto | Real, simulación |
+| Pruebas con 5 usuarios | Ver `testing/` | |
 
 ---
 
@@ -48,8 +46,8 @@ Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la can
 
 ### Requisitos Previos
 - Arduino IDE 2.x
-- Fusion 360
-- [Otras herramientas necesarias]
+- Fusion 360 para abrir los archivos `.f3d`
+- 
 
 ### Instalación
 1. Clonar el repositorio
