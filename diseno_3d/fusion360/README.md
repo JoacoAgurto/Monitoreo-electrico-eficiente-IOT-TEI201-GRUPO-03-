@@ -1,44 +1,13 @@
 # Archivos Fusion 360
 
-## Archivos Requeridos
+| Archivo | Qué contiene |
+|---|---|
+| Placa | Modelo con todos los componentes instalados en la placa, con historial incluido. Los componentes fueron descargados de terceros. Están citados en [FUENTES.md] |
+| Caja + Tapa | Modelo de encapsulado |
+| Placa dentro de caja | Modelo con sistema arduino integrado completamente en el encapsulado (debe ser paramétrico y mostrar todas las dimensiones) |
 
 ### `modelo_completo_v3.f3d`
 Archivo principal con **historial de cambios completo**
-
-**DEBE INCLUIR:**
--  Todos los componentes modelados
--  Ensamble completo funcional
--  Historial de diseño (timeline)
--  Materiales asignados
--  Constraints y relaciones
-
----
-
-## Estructura del Modelo
-
-### Componentes (Components)
-```
-Ensamble_Principal
-├── Encapsulado_Inferior
-├── Encapsulado_Superior
-├── ESP32_DevKit
-├── Sensor_DHT22
-├── LED_Indicador
-├── Soporte_Bateria
-├── Bracket_Montaje
-└── Tornilleria
-```
-
-### Uniones (Joints)
-Documentar las juntas principales y sus restricciones
-
-### Parámetros
-Listar parámetros principales utilizados:
-- `ancho_total = 120mm`
-- `alto_total = 80mm`
-- `grosor_pared = 2mm`
-
----
 
 ## Instrucciones de Apertura
 
@@ -53,8 +22,8 @@ Listar parámetros principales utilizados:
 
 | Versión | Fecha | Cambios Principales |
 |---------|-------|---------------------|
-| v3.0 | [Fecha] | Versión final para Avance #3 |
-| v2.1 | [Fecha] | Ajustes post Avance #2 |
-| v1.0 | [Fecha] | Primera versión funcional |
+| v3.0 | [] | Versión final para Avance #3 |
+| v2.1 | [23/11/2026] | Diseño impreso en 3D |
+| v1.0 | [19/10/2026] | Primera versión conceptual |
 
 ---
