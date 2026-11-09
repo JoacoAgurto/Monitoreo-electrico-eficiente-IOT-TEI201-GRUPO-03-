@@ -7,15 +7,28 @@
 - **ODS Seleccionado:**
 ODS 7: Energía Asequible y No Contaminante
 - **Problema a resolver:**
-Ayudar a hogares no considerados dentro del subsidio eléctrico en Chile, regulando sus gastos a través de un monitoreo eléctrico
+Ayudar a hogares no considerados dentro del subsidio eléctrico en Chile, regulando sus gastos a través de un monitoreo eléctrico que evite situaciones de sobreconsumo que agraven su situación económica, considerando las altas tarifas eléctricas de la actualidad.
 
 ### Descripción del Proyecto
-Un sistema de monitoreo eléctrico eficiente que lea la cantidad de energía utilizada para así transferir los datos a una página web / aplicación. Así, los usuarios podrán leer y entender fácilmente la cantidad de energía que están consumiendo la cantidad de gasto eléctrico para así tomar decisiones informadas para regular su consumo.
+Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la cantidad de energía utilizada por un dispositivo tecnológico de interés. A base Ardiuino, el sistema tiene la capacidad de transferir los datos obtenidos a una página web, donde se logra visualizar el consumo en tiempo real y una predicción de gasto por kWh. Con esta información, los usuarios podrán leer y entender fácilmente la cantidad de energía que están consumiendo, y por consiguiente, el dinero que tendrían que pagar a fin de mes. Esto les servirá para tomar decisiones informadas y regular su consumo.
 
 ### Estado del Proyecto
 - **Versión actual:** v2.0
-- **Última actualización:** [19/10/2026]
-- **Estado:** Mejorar primer Prototipo
+- **Última actualización:** [23/11/2026]
+- **Estado:** Prototipo final y mejorado
+---
+
+## Resultados Clave
+
+| Medida | Resultado | Origen |
+|---|---|---|
+| Exactitud de estados con imágenes sintéticas, condiciones moderadas | 100 % (1 936 cuadros) | Real, simulación |
+| Exactitud en condiciones extremas | 86.9 % (1 520 cuadros) | Real, simulación |
+| Error de velocidad en el caso base | 0.62 % de error medio absoluto | Real, simulación |
+| Error de desvío lateral | 0.12 mm de error medio absoluto | Real, simulación |
+| Tiempo de confirmación de una detención | 0.6 s en el caso base y 0.65 s en el difícil | Real, simulación |
+| Imágenes por segundo, teléfono contra ESP32-CAM | 10.3 contra 5.6 | Real, medido desde la Pi |
+| Pruebas con la correa física y con 5 usuarios | Ver `testing/` | **Inventado** |
 
 ---
 
