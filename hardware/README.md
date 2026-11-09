@@ -1,51 +1,53 @@
 # Hardware - Documentación
 
 ## Contenido
-Esta carpeta contiene toda la documentación técnica del hardware del proyecto.
+Esta carpeta contiene toda la documentación técnica del hardware del proyecto, incluyendo la justificación de cada componente y el montaje.
 
-### 📁 Carpetas
+## Carpetas
 
-#### `esquemas/`
-Diagramas de circuitos y esquemáticos del sistema
+- `esquemas/` tiene el esquema general del sistema arduino y el detalle de las conexiones.
+- `bom/` contiene la lista de materiales con cantidades y costo total en pesos chilenos.
+- `fotos/` reúne las fotos del prototipo armado, incluyendo su instalación en el encapsulado 3D.
 
-#### `bom/`
-Bill of Materials (Lista de materiales)
+## Componentes principales y por qué se eligieron
 
-#### `fotos/`
-Fotografías de alta resolución del prototipo ensamblado
+| Componente | Función | Justificación técnica |
+|---|---|---|
+| | |  |
+|  |  |  |
+|  |  |  |
+| ESP32 |  | |
 
----
+## Instrucciones de ensamble
 
-## Instrucciones de Ensamble
+### Montaje mecánico
 
-### Componentes Principales
-1. [Componente 1] - Función
-2. [Componente 2] - Función
-3. [Componente 3] - Función
+1. 
+2. 
+3. 
+4. 
 
-### Pasos de Ensamblaje
-1. [Paso 1]
-2. [Paso 2]
-3. [Paso 3]
+### Montaje eléctrico
 
+1. 
+2. 
+3. 
+4. 
 ### Precauciones
-- ⚠️ [Precaución 1]
-- ⚠️ [Precaución 2]
 
----
+- 
+- 
+- 
+- 
 
-## Especificaciones Técnicas
+## Especificaciones técnicas
 
-**Alimentación:** [Voltaje y corriente]  
-**Consumo:** [Watts/mA]  
-**Dimensiones:** [mm x mm x mm]  
-**Peso:** [gramos]
+| Dato | Valor |
+|---|---|
+| Alimentación de la Pi | 5 V y 3 A por USB-C |
+| Alimentación del motor | 12 V |
+| Corriente del motor | 0.3 A, ajustada con Vref de 0.24 V |
 
----
+## Diseño para la reparación
 
-## Troubleshooting
-
-| Problema | Posible Causa | Solución |
-|----------|---------------|----------|
-| [Problema 1] | [Causa] | [Solución] |
-| [Problema 2] | [Causa] | [Solución] |
+- Aquí se mmenciona como se pueden cambiar componentes para reparación
