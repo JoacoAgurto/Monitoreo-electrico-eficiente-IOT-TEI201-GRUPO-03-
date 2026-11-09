@@ -24,8 +24,8 @@ Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la can
 |---|---|---|
 | Lectura de corriente constante y sin interrupciones |  |  |
 | Error de detección de ruido |  |  |
-| Capacidad de predecir gasto en kWH | 0.62 % de error medio absoluto | Real, simulación |
-| Gráficos de consumo frente a tiempo legibles | 0.12 mm de error medio absoluto | Real, simulación |
+| Capacidad de predecir gasto en kWH |  | Real, simulación |
+| Gráficos de consumo frente a tiempo legibles | | Real, simulación |
 | Pruebas con 5 usuarios | Ver `testing/` | |
 
 ---
