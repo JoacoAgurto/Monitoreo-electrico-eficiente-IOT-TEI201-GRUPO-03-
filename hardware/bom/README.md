@@ -1,38 +1,11 @@
 # Bill of Materials (BOM)
 
-## Formato del Archivo
+El mismo contenido está en [bom_completo.xlsx], que se abre directo en Excel y tiene informaciones adicionales.
 
-El archivo BOM debe incluir las siguientes columnas:
-
-| Columna | Descripción | Ejemplo |
-|---------|-------------|---------|
-| Cantidad | Número de unidades | 1 |
-| Componente | Nombre descriptivo | ESP32 DevKit V1 |
-| Especificación | Detalles técnicos | 30 pines, WiFi+BT |
-| Fabricante | Marca del componente | Espressif |
-| Código/SKU | Identificador único | ESP32-WROOM-32 |
-| Proveedor | Tienda/distribuidor | AliExpress, MercadoLibre |
-| Precio Unitario | Costo por unidad (CLP) | $8,990 |
-| Precio Total | Cantidad × Precio | $8,990 |
-| Datasheet | Link a especificaciones | [URL] |
-
----
-
-## Archivos a Incluir
-
-- `bom_completo.xlsx` - Lista completa de materiales
-- `bom_completo.pdf` - Versión PDF para visualización
-- `datasheets/` - Carpeta con PDFs de componentes críticos
-
----
-
-## Presupuesto Total
-
-**Costo Total Estimado:** $[XXXXX] CLP
-
-### Desglose por Categoría
-- Microcontrolador: $X,XXX
-- Sensores: $X,XXX
-- Actuadores: $X,XXX
-- Estructura/Encapsulado: $X,XXX
-- Otros: $X,XXX
+| Componente | Cant. | Unitario CLP | Subtotal CLP | Función |
+|---|---|---|---|---|
+|Sensor de corriente CA no invasivo SCT013, 100A 1V | 1 | 3567 | 3567 | Medición de corriente alterna no invasiva |
+| Tira de conector JST para Arduino | 1 | 2820 | 2820 | Permite conexión y desconexión de componentes en el protoboard |
+| Conector TRRS 3,5 mm profesional de salida de audio TRRS de 3,5 mm | 1x5 | 2457| 2457 | Actúa como la conexión para el sensor de corriente |
+| Módulo Ads1115 | 2 | 5990 | 16970 | Leen la información del conector y lo traducen para la ESP32 |
+| | **Total** | | | **25814** |
