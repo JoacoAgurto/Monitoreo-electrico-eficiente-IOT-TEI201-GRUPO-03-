@@ -13,7 +13,7 @@
 
 | Archivo | Contenido |
 |---|---|
-| [plano_01_encapsulado.png](plano_01_encapsulado.png) | Vista superior, frontal y lateral derecha de la caja, con cajetín |
+| | Vista superior, frontal y lateral derecha de la caja, con cajetín incluido |
 
 ## Exportación desde Fusion 360
 
@@ -26,9 +26,3 @@ Opción 1: Drawing (Plano tradicional)
 Opción 2: Export directo
 File > Export > Formato PDF/DWG
 ```
-
----
-
-## Archivos a Entregar
-
-- `plano_conjunto_v3.pdf` - Plano principal
