@@ -1,47 +1,19 @@
 # Librerías
 
-## Librerías Estándar (Arduino IDE)
-
-Instalar desde el Library Manager de Arduino IDE:
-
-1. **[Nombre Librería 1]** - v[X.X.X]
-   - Propósito: [Descripción]
-   - Instalación: `Sketch > Include Library > Manage Libraries > Buscar "[nombre]"`
-
-2. **[Nombre Librería 2]** - v[X.X.X]
-   - Propósito: [Descripción]
-   - Instalación: [Instrucciones]
+ Librería | Versión mínima | Para qué |
+|---|---|---|
+|  |  |  |
+|  |  |  |
+| |  |  |
+| |  |  |
 
 ---
-
-## Librerías Personalizadas/Modificadas
-
-Si hay librerías modificadas o no disponibles en Arduino IDE, incluir en esta carpeta:
-
-### Estructura
-```
-librerias/
-├── MiLibreria/
-│   ├── MiLibreria.h
-│   ├── MiLibreria.cpp
-│   ├── keywords.txt
-│   └── README.md
-```
 
 ### Instalación Manual
 ```bash
 # Copiar carpeta a Arduino libraries
 cp -r MiLibreria ~/Documents/Arduino/libraries/
 ```
+## Firmware del ESP32
 
----
-
-## Dependencias Completas
-
-Listar TODAS las librerías necesarias con versiones exactas:
-
-| Librería | Versión | Fuente | Obligatoria |
-|----------|---------|--------|-------------|
-| WiFi | Built-in | ESP32 Core | ✅ |
-| [Lib 1] | x.x.x | Arduino Library Manager | ✅ |
-| [Lib 2] | x.x.x | GitHub | ❌ |
+La prueba del motor no usa librerías externas. Solo necesita el paquete de placas ESP32 de Espressif instalado desde el gestor de placas de Arduino IDE 2.x.
