@@ -71,25 +71,6 @@ Mediana: 4.0
 Desv. Est.: 0.8
 Mín: 3, Máx: 5
 ```
-
----
-
-## Datos de Impacto ODS
-
-### Baseline vs. Resultado
-
-**Antes de la intervención (baseline):**
-- [Indicador 1]: [Valor inicial]
-- [Indicador 2]: [Valor inicial]
-
-**Después de la intervención:**
-- [Indicador 1]: [Valor medido con prototipo]
-- [Indicador 2]: [Valor medido con prototipo]
-
-**Mejora:**
-- [Indicador 1]: [% de mejora]
-- [Indicador 2]: [% de mejora]
-
 ---
 
 ## Visualización de Datos
@@ -101,7 +82,3 @@ Incluir gráficos generados (exportar desde Excel como PNG):
 - `grafico_impacto_ods.png`
 - `grafico_comparativa_versiones.png`
 
-**Herramientas recomendadas:**
-- Excel / Google Sheets
-- Python (matplotlib, seaborn)
-- R / RStudio
