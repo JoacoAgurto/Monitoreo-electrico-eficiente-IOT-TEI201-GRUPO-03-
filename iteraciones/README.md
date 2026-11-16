@@ -6,32 +6,6 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 
 ---
 
-## Contenido de Cada Iteración
-
-Cada carpeta debe incluir:
-
-1. **README.md** - Descripción de la versión
-2. **Fotos** - Imágenes del prototipo en ese estado
-3. **Esquema** - Circuito de esa versión (si cambió)
-4. **Código** - Versión del software (si cambió)
-5. **Notas** - Problemas identificados y mejoras planificadas
-
----
-
-## Tabla Comparativa de Iteraciones
-
-| Aspecto | v1 | v2 | v3 |
-|---------|----|----|----| 
-| **Fecha** | [19/10/26] | [fecha] | [fecha] |
-| **Sensores** | [ADS1115 / Arduino esp32 cp210] | [lista] | [lista] |
-| **Actuadores** | [-] | [lista] | [lista] |
-| **Conectividad** | [local / WIFI] | [tipo] | [tipo] |
-| **Encapsulado** | Concepto visual | Prototipo | Finalizado |
-| **Testing** | Solo equipo | 2 usuarios | 5+ usuarios |
-| **Funcionalidad** | 95% | 80% | 100% |
-
----
-
 ## Evolución del Diseño
 
 ### Versión 1 (Iteración 1) - Concepto Inicial
@@ -112,27 +86,8 @@ Cada carpeta debe incluir:
 
 ---
 
-## Métricas de Mejora
+## Lecciones aprendidas
 
-| Métrica | v1 | v2 | v3 | Mejora Total |
-|---------|----|----|----| -------------|
-| Tiempo respuesta (ms) | - | - | - | - |
-| Consumo (mA) | - | - | - | - |
-| Tasa de errores (%) | - | - | - | - |
-| Satisfacción usuario (1-5) | - | - | - | - |
-
----
-
-## Lecciones Aprendidas
-
-### Técnicas
-- [Lección 1]
-- [Lección 2]
-
-### De Proceso
-- [Lección 1]
-- [Lección 2]
-
-### De Trabajo en Equipo
-- [Lección 1]
-- [Lección 2]
+1. 
+2. 
+3. 
