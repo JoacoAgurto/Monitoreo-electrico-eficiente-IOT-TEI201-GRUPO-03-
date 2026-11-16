@@ -25,9 +25,7 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 
 ### Hardware
 **Agregado:**
-- [Componente nuevo 1]
-- [Componente nuevo 2]
-- (posiblemente tengamos que agregar cables)
+- 4 resistencias de 100 KOHM
 
 **Modificado:**
 - [Cambio 1] - Razón: [Justificación]
@@ -62,9 +60,9 @@ Incluir en esta carpeta:
 ## Resultados de Testing
 
 ### Funcionalidad Lograda
-✅ [Función 1]  
-✅ [Función 2]  
-✅ [Función 3]  
+✅ [Lectura de Corriente]  
+✅ [Traspaso de lectura a Kwh y pesos chilenos]  
+✅ [Detección de ruido: Solucionado]  
 ⚠️ [Función 4 - parcial]
 
 ### Feedback del Avance #2
@@ -111,30 +109,6 @@ Incluir en esta carpeta:
 | Consumo energético | 250mA | 180mA | ↓28% |
 | Encapsulado | ❌ | Prototipo | ✅ |
 | Usuarios testeados | 0 | 2 | ✅ |
-
----
-
-## Plan para Iteración 3 (Versión Final)
-
-### Mejoras Críticas
-
-**Hardware:**
-- [ ] [Mejora crítica 1]
-- [ ] [Mejora crítica 2]
-
-**Software:**
-- [ ] [Optimización 1]
-- [ ] [Feature faltante]
-
-**Diseño:**
-- [ ] Refinar encapsulado
-- [ ] Mejorar accesibilidad
-- [ ] Finalizar sistema de montaje
-
-**Testing:**
-- [ ] Testear con 5+ usuarios
-- [ ] Validar métricas ODS
-- [ ] Instalación en contexto real
 
 ---
 
