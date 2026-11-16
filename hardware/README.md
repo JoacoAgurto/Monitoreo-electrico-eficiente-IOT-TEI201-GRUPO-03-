@@ -13,11 +13,11 @@ Esta carpeta contiene toda la documentación técnica del hardware del proyecto,
 
 | Componente | Función | Justificación técnica |
 |---|---|---|
-|ESP32|  |  |
-| Transformador de corriente | Medición de corriente alterna no invasiva |  |
-| Tira de Conector JST | Permite conexión y desconexión de componentes en el protoboard |  |
-| Conector TRRS | Actúa como la conexión para el sensor de corriente | |
-| Módulo Ads1115 | Leen la información del conector y lo traducen para la ESP32 | |
+|ESP32| Procesa los datos de corriente obtenidos por el sistema y los transmite a la plataforma de monitoreo mediante Wi-Fi. | Actúa como el controlador principal del sistema. Su capacidad de procesamiento y conectividad inalámbrica permite calcular variables eléctricas y enviar la información al usuario en tiempo real, facilitando el seguimiento del consumo energético. |
+| Transformador de corriente | Medición de corriente alterna no invasiva. | Permite medir el consumo eléctrico sin intervenir directamente el cableado de la vivienda, aumentando la seguridad de la instalación y facilitando la implementación en hogares. |
+| Tira de Conector JST | Permite conexión y desconexión de componentes en el protoboard. | Facilita el montaje, mantenimiento y reemplazo de componentes, proporcionando conexiones seguras y reduciendo errores de cableado durante el desarrollo y operación del dispositivo. |
+| Conector TRRS | Actúa como la conexión para el sensor de corriente. | Proporciona una interfaz física confiable para conectar el transformador de corriente al circuito de medición, asegurando una transmisión estable de la señal eléctrica capturada por el sensor. |
+| Módulo Ads1115 | Lee la información del sensor y la convierte en datos digitales para la ESP32. | Su convertidor analógico-digital de 16 bits ofrece mayor resolución y precisión que el ADC interno de la ESP32, permitiendo mediciones de corriente más exactas y, por consiguiente, estimaciones de consumo y costo más confiables para el usuario. |
 
 ## Instrucciones de ensamble
 
