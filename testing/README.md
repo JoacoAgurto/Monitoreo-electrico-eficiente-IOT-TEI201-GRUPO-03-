@@ -1,7 +1,7 @@
 # Testing y Validación
 
 ## Objetivo
-Validar el funcionamiento del prototipo con usuarios reales y medir el impacto cuantitativo en la problemática ODS seleccionada.
+Validar el funcionamiento del prototipo con usuarios reales. Se busca que estos usuarios entiendan como conectar el prototipo al objeto eléctrico, para luego ver la información en la nube. El objetivo se considera éxito si la información es legible y fácil de entender.
 
 ---
 
@@ -53,41 +53,13 @@ Datos cuantitativos recolectados
 - Claridad de funcionamiento (1-5)
 - Satisfacción general (1-5)
 
-### Impacto ODS
-- [Métrica específica 1 relacionada con ODS]
-- [Métrica específica 2 relacionada con ODS]
-- [Métrica específica 3 relacionada con ODS]
-
-### Desempeño Técnico
-- Tiempo de respuesta del sistema
-- Tasa de errores
-- Confiabilidad
-
 ---
 
-## Análisis de Resultados
+## Resumen de resultados
 
-### Cuantitativo
-- Promedios y desviaciones estándar
-- Gráficos de resultados
-- Comparación con baseline
-
-### Cualitativo
-- Temas recurrentes en feedback
-- Problemas identificados
-- Sugerencias de mejora
-
----
-
-## Validación de Impacto ODS
-
-**ODS Seleccionado:** [Número y nombre]
-
-**Meta específica del proyecto:** [Describir]
-
-**Indicadores de impacto:**
-1. [Indicador 1] - Baseline: [X], Meta: [Y], Alcanzado: [Z]
-2. [Indicador 2] - Baseline: [X], Meta: [Y], Alcanzado: [Z]
-
-**Proyección de impacto a escala:**
-[Si el prototipo se despliega en toda la ciudad/comunidad, cuál sería el impacto estimado]
+| Prueba | Resultado | 
+|---|---|---|
+| Conexión de prototipo con objeto | 100 % |
+| Lectura correcta de corriente | 100 % |
+| Exactitud de datos legibles en gráficos | 86.9 % |
+| Facilidad de lectura por parte del usuario| 19 de 20 |
