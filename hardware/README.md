@@ -13,10 +13,11 @@ Esta carpeta contiene toda la documentación técnica del hardware del proyecto,
 
 | Componente | Función | Justificación técnica |
 |---|---|---|
-| | |  |
-|  |  |  |
-|  |  |  |
-| ESP32 |  | |
+|ESP32| |  |
+| Transformador de corriente |  |  |
+| Tira de Conector JST |  |  |
+| Conector TRRS |  | |
+| Módulo Ads1115 |  | |
 
 ## Instrucciones de ensamble
 
