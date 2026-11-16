@@ -13,11 +13,11 @@ Esta carpeta contiene toda la documentación técnica del hardware del proyecto,
 
 | Componente | Función | Justificación técnica |
 |---|---|---|
-|ESP32| |  |
+|ESP32| Medición de corriente alterna no invasiva |  |
 | Transformador de corriente |  |  |
-| Tira de Conector JST |  |  |
-| Conector TRRS |  | |
-| Módulo Ads1115 |  | |
+| Tira de Conector JST | Permite conexión y desconexión de componentes en el protoboard |  |
+| Conector TRRS | Actúa como la conexión para el sensor de corriente | |
+| Módulo Ads1115 | Leen la información del conector y lo traducen para la ESP32 | |
 
 ## Instrucciones de ensamble
 
