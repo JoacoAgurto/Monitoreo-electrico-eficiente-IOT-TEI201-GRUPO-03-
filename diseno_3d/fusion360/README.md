@@ -2,12 +2,9 @@
 
 | Archivo | Qué contiene |
 |---|---|
-| Placa | Modelo con todos los componentes instalados en la placa, con historial incluido. Los componentes fueron descargados de terceros. Están citados en [FUENTES.md] |
-| Caja + Tapa | Modelo de encapsulado |
-| Placa dentro de caja | Modelo con sistema arduino integrado completamente en el encapsulado (debe ser paramétrico y mostrar todas las dimensiones) |
-
-### `modelo_completo_v3.f3d`
-Archivo principal con **historial de cambios completo**
+| Modelado Encapsulado Proyecto | Modelo del encapsulado en formato .STEP |
+| Caja | Modelo de la tapa en formato .STEP |
+| Modelo completo | Modelo Fusion 360 con sistema Arduino integrado completamente en el encapsulado 3D, con historial incluido. Los componentes fueron descargados de terceros. Están citados en [FUENTES.md] |
 
 ## Instrucciones de Apertura
 
