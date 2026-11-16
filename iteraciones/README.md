@@ -44,12 +44,11 @@ Cada carpeta debe incluir:
 - Para mejor usabilidad, es mejor implementar una nube para así ver el sistema de manera remota.
 
 ### Versión 2 (Iteración 2) - Primera Mejora
-**Fecha:** [XX/XX/2025]  
+**Fecha:** [23/11/2026]  
 **Estado:** Prototipo funcional mejorado
 
 **Mejoras implementadas:**
-- [Mejora 1]
-- [Mejora 2]
+- Se agregaron 4 resistencias de 100 KOHM, solucionando el problema del sistema en su incapacidad de diferenciar ruido con corriente real.
 
 **Problemas pendientes:**
 - [Problema 1]
@@ -73,7 +72,7 @@ Cada carpeta debe incluir:
 
 ### Hardware
 **De v1 a v2:**
-- No hubo cambios de hardware, no era necesario
+- Adición de 4 resistencias de 100 KOHM
 
 **De v2 a v3:**
 - Cambio: [Descripción]
