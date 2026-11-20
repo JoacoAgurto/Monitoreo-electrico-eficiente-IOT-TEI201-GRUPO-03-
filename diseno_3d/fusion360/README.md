@@ -2,9 +2,9 @@
 
 | Archivo | Qué contiene |
 |---|---|
-| <Modelado Encapsulado Proyecto TEI FInal.step> | Modelo del encapsulado en formato .STEP |
-| <Modelado tapa Encapsulado Proyecto TEI FInal.step> | Modelo de la tapa en formato .STEP |
-| <Modelado Encapsulado.zip>  | Carpeta comprimida conteniendo Modelo Fusion 360 con sistema Arduino integrado completamente en el encapsulado 3D, con historial incluido. Los componentes fueron descargados de terceros. Están citados en [FUENTES.md] |
+| Modelado Encapsulado Proyecto TEI FInal.step | Modelo del encapsulado en formato .STEP |
+| Modelado tapa Encapsulado Proyecto TEI FInal.step | Modelo de la tapa en formato .STEP |
+| Modelado Encapsulado.zip  | Carpeta comprimida conteniendo Modelo Fusion 360 con sistema Arduino integrado completamente en el encapsulado 3D, con historial incluido. Los componentes fueron descargados de terceros. Están citados en [FUENTES.md] |
 
 ## Instrucciones de Apertura
 
