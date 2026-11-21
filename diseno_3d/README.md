@@ -40,19 +40,3 @@ Planos técnicos con vistas y cotas
 
 ## Funcionalidad del Encapsulado
 - bla bla bla
-
----
-
-## Configuración de Impresión 3D 
-
-**Impresora:** [Modelo]  
-**Material:** [PLA/ABS/PETG]  
-**Calidad de capa:** 0.2mm  
-**Relleno:** 20-30%  
-**Soportes:** [Sí/No - dónde]  
-**Temperatura nozzle:** [°C]  
-**Temperatura cama:** [°C]  
-**Velocidad:** [mm/s]
-
-**Tiempo estimado de impresión:** [X horas]  
-**Peso de material:** [X gramos]
