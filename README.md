@@ -12,6 +12,9 @@ Ayudar a hogares no considerados dentro del subsidio eléctrico en Chile, regula
 ### Descripción del Proyecto
 Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la cantidad de energía utilizada por un dispositivo tecnológico de interés. A base Ardiuino, el sistema tiene la capacidad de transferir los datos obtenidos a una página web, donde se logra visualizar el consumo en tiempo real y una predicción de gasto por kWh. Con esta información, los usuarios podrán leer y entender fácilmente la cantidad de energía que están consumiendo, y por consiguiente, el dinero que tendrían que pagar a fin de mes. Esto les servirá para tomar decisiones informadas y regular su consumo.
 
+<img width="1391" height="912" alt="image" src="https://github.com/user-attachments/assets/5fa52b29-f69c-4cfd-b8a6-607bfe4dd26e" />
+
+
 ### Estado del Proyecto
 - **Versión actual:** v3.0
 - **Última actualización:** [23/11/2026]
