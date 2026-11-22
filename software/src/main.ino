@@ -1,1247 +1,1717 @@
-
 /*
-  =========================================================
-              MONITOR DE CORRIENTE ESP32
-  =========================================================
+  ==========================================================
+               MONITOR DE CORRIENTE ESP32 V7
+  ==========================================================
 
-  COMPONENTES:
-  - ESP32
-  - 2 módulos ADS1115
-  - 4 pinzas SCT-013 de 100 A / 1 V
-  - 1 módulo microSD
-  - Servidor web Wi-Fi sin router
+  CAMBIO V7:
+  - Eliminada la comprobacion de IP que bloqueaba el panel.
+  - Sin usuario ni contrasena en el navegador.
+  - Acceso directo desde http://192.168.4.1
 
-  DISTRIBUCIÓN DE LOS CONECTORES:
-  Conector 1 -> ADS2 A2-A3
-  Conector 2 -> ADS2 A0-A1
-  Conector 3 -> ADS1 A2-A3
-  Conector 4 -> ADS1 A0-A1
+  HARDWARE:
+    ESP32 Dev Module
+    ADS1: 0x48
+    ADS2: 0x49
+    SCT-013: 100 A / 1 V
+    MicroSD SPI
 
-  FUNCIONES:
-  - Medir corriente RMS en cuatro canales.
-  - Mostrar cuatro gráficos independientes.
-  - Ocultar o mostrar cada gráfico.
-  - Guardar mediciones en un archivo CSV.
-  - Descargar y reiniciar el historial CSV.
-  - Modificar el SSID y la contraseña desde la web.
-  - Guardar la configuración Wi-Fi en la microSD.
-  - Usar Wi-Fi predeterminado si falla la microSD.
+  MAPEO:
+    Conector 1 = ADS2 A2-A3
+    Conector 2 = ADS2 A0-A1
+    Conector 3 = ADS1 A2-A3
+    Conector 4 = ADS1 A0-A1
 
   IMPORTANTE:
-  La detección física de una pinza conectada todavía
-  no está implementada. El programa únicamente detecta
-  si los módulos ADS1115 están disponibles.
+  - El ADS1115 necesita entradas acondicionadas para
+    permanecer entre GND y VDD en todo momento.
+  - No existe deteccion fisica de pinzas conectadas.
+  - setInsecure() es solamente para pruebas de HTTPS.
+  ==========================================================
 */
 
-// Comunicación I2C entre ESP32 y ADS1115.
+#include <Arduino.h>
 #include <Wire.h>
-
-// Comunicación SPI con la microSD.
 #include <SPI.h>
-
-// Lectura y escritura de archivos en la microSD.
 #include <SD.h>
-
-// Creación de la red Wi-Fi del ESP32.
 #include <WiFi.h>
-
-// Servidor HTTP para mostrar la página web.
+#include <WiFiClientSecure.h>
+#include <HTTPClient.h>
 #include <WebServer.h>
-
-// Control de los convertidores ADS1115.
+#include <Preferences.h>
 #include <Adafruit_ADS1X15.h>
-
-// Funciones matemáticas, como la raíz cuadrada.
+#include <time.h>
 #include <math.h>
 
+#include "pagina_web.h"
 
-// Credenciales predeterminadas de la red Wi-Fi.
-// Se utilizan si no hay configuración válida en la SD.
-const char* DEFAULT_SSID = "Monitor-ESP32";
-const char* DEFAULT_PASS = "corriente123";
+// ==========================================================
+// PINES
+// ==========================================================
 
-// Archivos almacenados en la microSD.
-const char* CSV_PATH = "/corriente_conectores.csv";
-const char* WIFI_PATH = "/wifi.cfg";
+#define I2C_SDA 21
+#define I2C_SCL 22
 
-// Pin CS del módulo microSD.
-const int SD_CS = 5;
+#define SD_CS 5
+#define SD_SCK 18
+#define SD_MISO 19
+#define SD_MOSI 23
 
-// Intervalo objetivo entre ciclos de medición, en ms.
-const unsigned long SAMPLE_INTERVAL = 1000;
+// ==========================================================
+// WIFI DEL ESP32
+// ==========================================================
 
-// Cantidad de muestras tomadas por cada conector.
-const int SAMPLES = 128;
+const char* AP_SSID = "Monitor-ESP32";
+const char* AP_PASSWORD = "corriente123";
 
-// Conversión nominal de la pinza SCT-013 de 100 A / 1 V.
-// Por cada voltio RMS, corresponden nominalmente 100 A.
-const float AMPS_PER_VOLT = 100.0f;
+IPAddress AP_IP(192, 168, 4, 1);
+IPAddress AP_GATEWAY(192, 168, 4, 1);
+IPAddress AP_SUBNET(255, 255, 255, 0);
 
-// Objetos que representan los dos ADS1115.
-Adafruit_ADS1115 ads1, ads2;
+// ==========================================================
+// OBJETOS
+// ==========================================================
 
-// Servidor web HTTP en el puerto 80.
 WebServer server(80);
+Preferences preferences;
 
-// Indican si cada dispositivo se inicializó correctamente.
+Adafruit_ADS1115 ads1;
+Adafruit_ADS1115 ads2;
+
+// ==========================================================
+// ESTADO DEL HARDWARE
+// ==========================================================
+
 bool ads1OK = false;
 bool ads2OK = false;
 bool sdOK = false;
 
-// Permite suspender temporalmente el registro CSV.
-bool loggingPaused = false;
-
-// Credenciales Wi-Fi que se utilizarán realmente.
-String wifiSSID = DEFAULT_SSID;
-String wifiPass = DEFAULT_PASS;
-
-// Corriente RMS de cada conector, en amperios.
-float amps[4] = {0, 0, 0, 0};
-
-// Indica si el ADS1115 correspondiente está disponible.
-// NO indica si hay una pinza enchufada.
-bool available[4] = {false, false, false, false};
-
-// Control de tiempo y registros.
-unsigned long lastSample = 0;
-unsigned long records = 0;
-
-// Momento programado para reiniciar el ESP32.
-unsigned long restartAt = 0;
-
-// Interfaz web
-
-const char PAGE[] PROGMEM = R"HTML(
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Monitor de corriente</title>
-
-<style>
-/* Apariencia general de la página */
-:root {
-  color-scheme: dark;
-  font-family: system-ui, Arial, sans-serif;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: #0c1423;
-  color: #eef4ff;
-}
-
-header {
-  padding: 24px;
-  background: #13233b;
-  border-bottom: 1px solid #34465e;
-}
-header h1 { margin: 0 0 6px; }
-header p { margin: 0; color: #acbdd0; }
-
-main {
-  max-width: 1100px;
-  margin: auto;
-  padding: 16px;
-}
-
-.status {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-.pill, .card {
-  background: #17263e;
-  border: 1px solid #34465e;
-  border-radius: 14px;
-}
-.pill { padding: 9px 12px; }
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 14px;
-}
-.card { padding: 18px; min-width: 0; }
-.top {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  align-items: center;
-}
-h2 { font-size: 20px; margin: 0 0 12px; }
-
-.value {
-  font-size: 38px;
-  font-weight: 700;
-  margin: 12px 0;
-}
-.unit, .muted {
-  color: #acbdd0;
-  font-size: 14px;
-}
-
-.chart { margin-top: 15px; }
-.chart[hidden] { display: none; }
-canvas {
-  width: 100%;
-  height: 180px;
-  background: #0e1b2e;
-  border-radius: 9px;
-  border: 1px solid #34465e;
-}
-
-section.extra { margin-top: 15px; }
-input[type=text], input[type=password] {
-  width: 100%;
-  padding: 11px;
-  border-radius: 8px;
-  background: #0c1728;
-  border: 1px solid #536782;
-  color: white;
-  font-size: 16px;
-}
-label.field { display: block; margin: 12px 0; }
-label.field span {
-  display: block;
-  margin-bottom: 6px;
-}
-button {
-  background: #27618e;
-  color: white;
-  border: 1px solid #568ab1;
-  border-radius: 9px;
-  padding: 11px 15px;
-  font-size: 15px;
-  cursor: pointer;
-}
-button.danger {
-  background: #8b3535;
-  border-color: #c77878;
-}
-a { color: #9dd5ff; }
-.actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.message {
-  min-height: 1.4em;
-  color: #ffd7a0;
-}
-
-@media(max-width:720px) {
-  .grid { grid-template-columns: 1fr; }
-  .value { font-size: 34px; }
-}
-</style>
-</head>
-
-<body>
-<header>
-  <h1>Monitor de corriente</h1>
-  <p>Cuatro conectores independientes</p>
-</header>
-
-<main>
-
-  <div class="status">
-    <div class="pill">
-      ESP32: <b id="connection">Conectando</b>
-    </div>
-    <div class="pill">
-      microSD: <b id="sd">Consultando</b>
-    </div>
-    <div class="pill">
-      Registros: <b id="records">0</b>
-    </div>
-  </div>
-
-  <div id="cards" class="grid"></div>
-
-  <section class="card extra">
-    <h2>Historial CSV</h2>
-    <p class="muted">
-      Se registran los cuatro conectores
-      aunque ocultes sus gráficos.
-    </p>
-
-    <div class="actions">
-      <a href="/download">Descargar CSV</a>
-      <button class="danger" id="reset">
-        Reiniciar archivo CSV
-      </button>
-    </div>
-
-    <p id="resetMsg" class="message"></p>
-  </section>
-
-  <section class="card extra">
-    <h2>Configuración Wi-Fi</h2>
-    <p class="muted">
-      La red es creada por el ESP32, sin router.
-      Los cambios se guardan en la microSD.
-    </p>
-
-    <form id="wifiForm">
-      <label class="field">
-        <span>Nombre de la red (SSID)</span>
-        <input id="ssid" type="text"
-          minlength="1" maxlength="32" required>
-      </label>
-
-      <label class="field">
-        <span>Contraseña (mínimo 8 caracteres)</span>
-        <input id="pass" type="password"
-          minlength="8" maxlength="63" required>
-      </label>
-
-      <button type="submit">
-        Guardar Wi-Fi y reiniciar red
-      </button>
-    </form>
-
-    <p id="wifiMsg" class="message"></p>
-  </section>
-</main>
-
-<script>
-
-const names = [
-  'Conector 1',
-  'Conector 2',
-  'Conector 3',
-  'Conector 4'
-];
-
-const colors = [
-  '#6bb7ff',
-  '#56d7ac',
-  '#ffbc70',
-  '#c8a2ff'
-];
-
-const hist = [[],[],[],[]];
-
-const visible = [true,true,true,true];
-
-const maxPoints = 90;
-
-const el = id => document.getElementById(id);
-
-names.forEach((name,i) => {
-
-  try {
-    visible[i] =
-      localStorage.getItem('visible'+i) !== 'false';
-  } catch(e) {}
-
-  const card = document.createElement('section');
-  card.className = 'card';
-
-  card.innerHTML = `
-    <div class="top">
-      <h2>${name}</h2>
-      <label class="muted">
-        <input type="checkbox" id="toggle${i}"
-          ${visible[i] ? 'checked' : ''}>
-        Gráfico
-      </label>
-    </div>
-
-    <div class="value">
-      <span id="amp${i}">--</span>
-      <span class="unit">A RMS</span>
-    </div>
-
-    <div id="state${i}" class="muted">
-      Esperando lectura
-    </div>
-
-    <div class="chart" id="chartbox${i}"
-      ${visible[i] ? '' : 'hidden'}>
-      <canvas id="canvas${i}"
-        width="680" height="220"></canvas>
-    </div>`;
-
-  el('cards').appendChild(card);
-
-  el('toggle'+i).addEventListener('change',e => {
-
-    visible[i] = e.target.checked;
-    el('chartbox'+i).hidden = !visible[i];
-
-    try {
-      localStorage.setItem(
-        'visible'+i,
-        String(visible[i])
-      );
-    } catch(err) {}
-
-    if(visible[i]) draw(i);
-  });
-});
-
-function draw(i) {
-
-  if(!visible[i]) return;
-
-  const c = el('canvas'+i);
-  const ctx = c.getContext('2d');
-
-  const w = c.width;
-  const h = c.height;
-
-  const L = 50, R = 12, T = 15, B = 30;
-
-  ctx.clearRect(0,0,w,h);
-
-  const valid = hist[i].filter(Number.isFinite);
-  const maximum = Math.max(.1,...valid)*1.15;
-
-  ctx.font = '13px Arial';
-  ctx.fillStyle = '#acbdd0';
-  ctx.lineWidth = 1;
-
-  for(let k=0;k<=4;k++) {
-
-    const y = T+(h-T-B)*k/4;
-
-    ctx.strokeStyle = '#354861';
-    ctx.beginPath();
-    ctx.moveTo(L,y);
-    ctx.lineTo(w-R,y);
-    ctx.stroke();
-
-    ctx.fillText(
-      (maximum*(1-k/4)).toFixed(maximum<1?2:1),
-      5,y+4
-    );
-  }
-
-  ctx.strokeStyle = colors[i];
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-
-  let started = false;
-
-  hist[i].forEach((v,k) => {
-
-    if(!Number.isFinite(v)) {
-      started = false;
-      return;
-    }
-
-    const x = L+(w-L-R)*k/(maxPoints-1);
-
-    const y = h-B-(h-T-B)*
-      Math.min(v,maximum)/maximum;
-
-    if(!started) {
-      ctx.moveTo(x,y);
-      started = true;
-    } else {
-      ctx.lineTo(x,y);
-    }
-  });
-
-  ctx.stroke();
-}
-
-let polling = false;
-
-async function update() {
-
-  if(polling) return;
-  polling = true;
-
-  try {
-
-    const r = await fetch('/api/data',{
-      cache:'no-store'
-    });
-
-    if(!r.ok) throw Error('HTTP '+r.status);
-
-    const d = await r.json();
-
-    el('connection').textContent = 'Conectado';
-    el('sd').textContent =
-      d.sd ? 'Disponible' : 'No disponible';
-    el('records').textContent = d.records;
-
-    d.channels.forEach((ch,i) => {
-
-      el('amp'+i).textContent =
-        ch.available ?
-        Number(ch.amps).toFixed(3) : '--';
-
-      el('state'+i).textContent =
-        ch.available ?
-        'Lectura actualizada' :
-        'ADS1115 no disponible';
-
-      hist[i].push(
-        ch.available ? Number(ch.amps) : null
-      );
-
-      if(hist[i].length>maxPoints) {
-        hist[i].shift();
-      }
-
-      draw(i);
-    });
-
-  } catch(e) {
-
-    el('connection').textContent = 'Sin conexión';
-
-  } finally {
-    polling = false;
-  }
-}
-
-async function loadWifi() {
-  try {
-
-    const r = await fetch('/api/wifi');
-    const d = await r.json();
-
-    el('ssid').value = d.ssid;
-    el('pass').value = d.password;
-
-  } catch(e) {}
-}
-
-el('reset').onclick = async () => {
-
-  if(!confirm(
-    '¿Borrar definitivamente todo el historial CSV '+
-    'y comenzar desde cero?'
-  )) return;
-
-  el('resetMsg').textContent =
-    'Reiniciando historial...';
-
-  try {
-
-    const r = await fetch('/api/resetcsv',{
-      method:'POST'
-    });
-
-    el('resetMsg').textContent = await r.text();
-
-    update();
-
-  } catch(e) {
-    el('resetMsg').textContent =
-      'Error de comunicación';
-  }
+unsigned long ultimaRevisionSD = 0;
+const unsigned long INTERVALO_REVISION_SD = 5000;
+
+bool canalDisponible[4] = {
+  false, false, false, false
 };
 
-el('wifiForm').onsubmit = async e => {
+// ==========================================================
+// CONFIGURACION PERSISTENTE
+// ==========================================================
 
-  e.preventDefault();
+String wifiSSID = "";
+String wifiPassword = "";
 
-  const ssid = el('ssid').value;
-  const password = el('pass').value;
+String apiURL = "";
+String apiToken = "";
 
-  if(!confirm(
-    'La red Wi-Fi cambiará y tendrás que '+
-    'reconectarte. ¿Continuar?'
-  )) return;
+String deviceID = "esp32-01";
 
-  el('wifiMsg').textContent = 'Guardando...';
+uint32_t uploadIntervalSeconds = 10;
+uint32_t queueOffset = 0;
 
-  try {
+// Se mantienen los nombres anteriores para conservar
+// el historial de la tarjeta microSD.
 
-    const body = new URLSearchParams({
-      ssid,password
-    });
+const char* CSV_FILE = "/corriente_v5.csv";
+const char* QUEUE_FILE = "/pendientes_v5.csv";
 
-    const r = await fetch('/api/wifi',{
-      method:'POST',
-      headers:{
-        'Content-Type':
-          'application/x-www-form-urlencoded'
-      },
-      body
-    });
+// ==========================================================
+// MEDICIONES
+// ==========================================================
 
-    el('wifiMsg').textContent = await r.text();
-
-  } catch(err) {
-    el('wifiMsg').textContent =
-      'Error de comunicación';
-  }
+float corriente[4] = {
+  NAN, NAN, NAN, NAN
 };
 
-loadWifi();
-update();
+const float AMPERIOS_POR_VOLTIO = 100.0f;
+const int NUM_MUESTRAS = 128;
 
-setInterval(update,1000);
+// ==========================================================
+// TEMPORIZADORES
+// ==========================================================
 
-</script>
-</body>
-</html>
-)HTML";
+unsigned long ultimaMedicion = 0;
+unsigned long ultimoEnvio = 0;
+unsigned long ultimoIntentoWiFi = 0;
+unsigned long ultimaRevisionHora = 0;
 
+const unsigned long INTERVALO_MEDICION = 1000;
+const unsigned long INTERVALO_RECONEXION = 15000;
+const unsigned long INTERVALO_REVISION_HORA = 60000;
 
-/*
-  Esta función recibe:
+// ==========================================================
+// ESTADISTICAS
+// ==========================================================
 
-  ads:
-    ADS1115 que realizará la medición.
+uint32_t registrosLocales = 0;
+uint32_t registrosEnviados = 0;
 
-  pair23:
-    true  -> medir A2-A3.
-    false -> medir A0-A1.
+String ultimoEstadoAPI = "Sin configurar";
+String ultimoErrorAPI = "";
 
-  PROCEDIMIENTO:
+int ultimoHTTP = 0;
 
-  1. Tomar 128 muestras de voltaje diferencial.
-  2. Calcular la media de esas muestras.
-  3. Restar matemáticamente la componente continua.
-  4. Calcular el valor RMS de la componente variable.
-  5. Convertir voltios RMS a amperios RMS.
+uint64_t ultimoBloqueRemoto = UINT64_MAX;
 
-  La fórmula utilizada es:
+// ==========================================================
+// HORA DE CHILE
+// ==========================================================
 
-  Vrms = sqrt( promedio(V²) - promedio(V)² )
+const char* CHILE_TZ =
+  "CLT4CLST,M9.1.6/24,M4.1.6/24";
 
-  Irms = Vrms * 100
+// ==========================================================
+// FUNCIONES AUXILIARES
+// ==========================================================
 
-  NOTA:
-  La relación 100 A/V es nominal. No sustituye una
-  calibración con una corriente conocida.
-*/
-
-float measure(
-  Adafruit_ADS1115 &ads,
-  bool pair23
-) {
-
-  // Suma de los voltajes.
-  double sum = 0;
-
-  // Suma de los voltajes elevados al cuadrado.
-  double sum2 = 0;
-
-  for(int i=0;i<SAMPLES;i++) {
-
-    // Selecciona el par diferencial correspondiente.
-    int16_t raw = pair23 ?
-      ads.readADC_Differential_2_3() :
-      ads.readADC_Differential_0_1();
-
-    // Convierte la lectura digital a voltios.
-    double v = ads.computeVolts(raw);
-
-    // Acumula los valores necesarios para el RMS.
-    sum += v;
-    sum2 += v*v;
-  }
-
-  // Componente media o continua.
-  double mean = sum/SAMPLES;
-
-  // Varianza de la señal.
-  double variance = sum2/SAMPLES-mean*mean;
-
-  // Evita raíces de valores negativos por redondeo.
-  return sqrt(fmax(0.0,variance))*
-    AMPS_PER_VOLT;
+bool wifiConectado() {
+  return WiFi.status() == WL_CONNECTED;
 }
 
-// Medición de los cuatro conectores
-
-void sampleChannels() {
-
-  available[0] = ads2OK;
-  available[1] = ads2OK;
-  available[2] = ads1OK;
-  available[3] = ads1OK;
-
-  // ADS2 contiene los conectores 1 y 2.
-  if(ads2OK) {
-
-    // Conector 1: ADS2 A2-A3.
-    amps[0] = measure(ads2,true);
-
-    // Conector 2: ADS2 A0-A1.
-    amps[1] = measure(ads2,false);
-  }
-
-  // ADS1 contiene los conectores 3 y 4.
-  if(ads1OK) {
-
-    // Conector 3: ADS1 A2-A3.
-    amps[2] = measure(ads1,true);
-
-    // Conector 4: ADS1 A0-A1.
-    amps[3] = measure(ads1,false);
-  }
+bool horaValida() {
+  return time(nullptr) > 1735689600;
 }
 
-// Creación del archivo CSV para la microSD
-bool createCSV() {
+String fechaUTC() {
 
-  // No intentar escribir si no hay microSD.
-  if(!sdOK) return false;
+  if (!horaValida()) {
+    return "";
+  }
 
-  // Si el archivo ya existe, conservar su contenido.
-  if(SD.exists(CSV_PATH)) return true;
+  time_t ahora = time(nullptr);
 
-  // Crear el archivo.
-  File f = SD.open(CSV_PATH,FILE_WRITE);
+  struct tm utc;
+  gmtime_r(&ahora, &utc);
 
-  if(!f) return false;
+  char buffer[32];
 
-  // Escribir los encabezados de las columnas.
-  size_t n = f.println(
-    "tiempo_ms,Conector_1_A,Conector_2_A,"
-    "Conector_3_A,Conector_4_A"
+  strftime(
+    buffer,
+    sizeof(buffer),
+    "%Y-%m-%dT%H:%M:%SZ",
+    &utc
   );
 
-  // Cerrar el archivo para completar la escritura.
-  f.close();
-
-  return n>0;
+  return String(buffer);
 }
 
-// Registro de las mediciones de la corriente
-void appendCSV() {
+String fechaChile() {
 
-  // No registrar si la SD falla o el registro está pausado.
-  if(!sdOK || loggingPaused) return;
+  if (!horaValida()) {
+    return "SIN_HORA";
+  }
 
-  // Abrir el CSV para agregar una nueva fila.
-  File f = SD.open(CSV_PATH,FILE_APPEND);
+  time_t ahora = time(nullptr);
 
-  if(!f) return;
+  struct tm local;
+  localtime_r(&ahora, &local);
 
-  // Primera columna: tiempo desde el arranque, en ms.
-  f.print(millis());
+  char buffer[40];
 
-  // Guardar los cuatro valores de corriente.
-  for(int i=0;i<4;i++) {
+  strftime(
+    buffer,
+    sizeof(buffer),
+    "%Y-%m-%d %H:%M:%S %z",
+    &local
+  );
 
-    f.print(',');
+  return String(buffer);
+}
 
-    // Dejar vacío si el ADS no está disponible.
-    if(available[i]) {
-      f.print(amps[i],3);
+String escaparJSON(const String& texto) {
+
+  String resultado;
+  resultado.reserve(texto.length() + 12);
+
+  for (size_t i = 0; i < texto.length(); i++) {
+
+    char c = texto[i];
+
+    switch (c) {
+
+      case '"':
+        resultado += "\\\"";
+        break;
+
+      case '\\':
+        resultado += "\\\\";
+        break;
+
+      case '\n':
+        resultado += "\\n";
+        break;
+
+      case '\r':
+        resultado += "\\r";
+        break;
+
+      case '\t':
+        resultado += "\\t";
+        break;
+
+      default:
+        if ((uint8_t)c >= 32) {
+          resultado += c;
+        }
+        break;
     }
   }
 
-  // Terminar la fila.
-  size_t n = f.println();
-
-  // Cerrar el archivo.
-  f.close();
-
-  // Incrementar el contador si se escribió la fila.
-  if(n) records++;
+  return resultado;
 }
 
-// Cargar la configuracion de la red de la microSD
-void loadWiFiConfig() {
+String numeroJSON(float valor) {
 
-  // Primero establecer los valores predeterminados.
-  wifiSSID = DEFAULT_SSID;
-  wifiPass = DEFAULT_PASS;
+  if (!isfinite(valor)) {
+    return "null";
+  }
 
-  // Si no existe la SD o el archivo, conservarlos.
-  if(!sdOK || !SD.exists(WIFI_PATH)) return;
+  return String(valor, 3);
+}
 
-  File f = SD.open(WIFI_PATH,FILE_READ);
-  if(!f) return;
+// ==========================================================
+// CONFIGURACION
+// ==========================================================
 
-  // Primera línea: SSID.
-  String s = f.readStringUntil('\n');
+void cargarConfiguracion() {
 
-  // Segunda línea: contraseña.
-  String p = f.readStringUntil('\n');
+  preferences.begin("monitor", false);
 
-  f.close();
+  wifiSSID = preferences.getString(
+    "wifi_ssid", ""
+  );
 
-  // Eliminar espacios al inicio y al final.
-  s.trim();
-  p.trim();
+  wifiPassword = preferences.getString(
+    "wifi_pass", ""
+  );
 
-  // Validar las longitudes permitidas.
-  if(
-    s.length()>=1 &&
-    s.length()<=32 &&
-    p.length()>=8 &&
-    p.length()<=63
-  ) {
+  apiURL = preferences.getString(
+    "api_url", ""
+  );
 
-    // Utilizar los valores guardados.
-    wifiSSID = s;
-    wifiPass = p;
+  apiToken = preferences.getString(
+    "api_token", ""
+  );
 
-    Serial.println(
-      "Wi-Fi cargado desde microSD"
-    );
+  deviceID = preferences.getString(
+    "device_id", "esp32-01"
+  );
+
+  uploadIntervalSeconds = preferences.getUInt(
+    "upload_sec", 10
+  );
+
+  queueOffset = preferences.getUInt(
+    "queue_pos", 0
+  );
+
+  if (uploadIntervalSeconds < 5) {
+    uploadIntervalSeconds = 5;
+  }
+
+  if (uploadIntervalSeconds > 3600) {
+    uploadIntervalSeconds = 3600;
+  }
+
+  Serial.println("[CONFIG] Cargada");
+}
+
+void guardarConfiguracion() {
+
+  preferences.putString(
+    "wifi_ssid", wifiSSID
+  );
+
+  preferences.putString(
+    "wifi_pass", wifiPassword
+  );
+
+  preferences.putString(
+    "api_url", apiURL
+  );
+
+  preferences.putString(
+    "api_token", apiToken
+  );
+
+  preferences.putString(
+    "device_id", deviceID
+  );
+
+  preferences.putUInt(
+    "upload_sec",
+    uploadIntervalSeconds
+  );
+}
+
+// ==========================================================
+// WIFI
+// ==========================================================
+
+void iniciarWiFi() {
+
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.setSleep(false);
+
+  WiFi.softAPConfig(
+    AP_IP,
+    AP_GATEWAY,
+    AP_SUBNET
+  );
+
+  bool apOK = WiFi.softAP(
+    AP_SSID,
+    AP_PASSWORD
+  );
+
+  if (apOK) {
+
+    Serial.println("[WIFI] AP iniciado");
+
+    Serial.print("[WIFI] SSID: ");
+    Serial.println(AP_SSID);
+
+    Serial.print("[WIFI] IP: ");
+    Serial.println(WiFi.softAPIP());
 
   } else {
 
-    // Si el archivo contiene datos inválidos,
-    // mantener los valores predeterminados.
-    Serial.println(
-      "Configuracion invalida: usando predeterminados"
+    Serial.println("[WIFI] Error iniciando AP");
+  }
+
+  if (wifiSSID.length() > 0) {
+
+    Serial.print("[WIFI] Conectando a ");
+    Serial.println(wifiSSID);
+
+    WiFi.begin(
+      wifiSSID.c_str(),
+      wifiPassword.c_str()
     );
   }
 }
 
-// Guardar la configuracion de la red
-bool saveWiFiConfig(
-  const String &s,
-  const String &p
+void mantenerWiFi() {
+
+  if (wifiSSID.length() == 0) {
+    return;
+  }
+
+  if (wifiConectado()) {
+    return;
+  }
+
+  unsigned long ahora = millis();
+
+  if (
+    ahora - ultimoIntentoWiFi <
+    INTERVALO_RECONEXION
+  ) {
+    return;
+  }
+
+  ultimoIntentoWiFi = ahora;
+
+  Serial.println("[WIFI] Reconectando...");
+
+  WiFi.disconnect();
+
+  WiFi.begin(
+    wifiSSID.c_str(),
+    wifiPassword.c_str()
+  );
+}
+
+// ==========================================================
+// NTP
+// ==========================================================
+
+void iniciarNTP() {
+
+  setenv("TZ", CHILE_TZ, 1);
+  tzset();
+
+  configTime(
+    0,
+    0,
+    "pool.ntp.org",
+    "time.google.com",
+    "time.cloudflare.com"
+  );
+
+  Serial.println("[NTP] Iniciado");
+}
+
+void mantenerHora() {
+
+  if (!wifiConectado()) {
+    return;
+  }
+
+  unsigned long ahora = millis();
+
+  if (
+    ahora - ultimaRevisionHora <
+    INTERVALO_REVISION_HORA
+  ) {
+    return;
+  }
+
+  ultimaRevisionHora = ahora;
+
+  Serial.print("[NTP] ");
+  Serial.println(fechaChile());
+}
+
+// ==========================================================
+// MICROSD
+// ==========================================================
+
+void crearArchivoSiNoExiste(
+  const char* ruta,
+  const char* cabecera
 ) {
 
-  if(!sdOK) return false;
+  if (!sdOK) {
+    return;
+  }
 
-  // Archivo temporal utilizado durante la escritura.
-  const char* temp = "/wifi.tmp";
+  if (SD.exists(ruta)) {
+    return;
+  }
 
-  // Eliminar un temporal anterior si existe.
-  SD.remove(temp);
+  File archivo = SD.open(
+    ruta,
+    FILE_WRITE
+  );
 
-  File f = SD.open(temp,FILE_WRITE);
-  if(!f) return false;
+  if (!archivo) {
+    return;
+  }
 
-  // Escribir SSID y contraseña en líneas separadas.
-  bool ok = f.println(s)>0;
-  ok = (f.println(p)>0) && ok;
+  archivo.println(cabecera);
+  archivo.close();
+}
 
-  f.close();
+bool montarSD() {
 
-  if(!ok) {
-    SD.remove(temp);
+  if (!SD.begin(SD_CS, SPI, 4000000)) {
+    sdOK = false;
+    Serial.println("[SD] No disponible");
     return false;
   }
 
-  // Eliminar la configuración anterior.
-  if(
-    SD.exists(WIFI_PATH) &&
-    !SD.remove(WIFI_PATH)
-  ) {
+  if (SD.cardType() == CARD_NONE) {
+    sdOK = false;
+    Serial.println("[SD] Tarjeta no detectada");
     return false;
   }
 
-  // Renombrar el archivo temporal como wifi.cfg.
-  return SD.rename(temp,WIFI_PATH);
-}
+  sdOK = true;
 
-// Generar los datos para la pagina web
-
-String jsonData() {
-
-  String out;
-  out.reserve(350);
-
-  out = "{\"sd\":";
-  out += sdOK ? "true" : "false";
-
-  out += ",\"records\":";
-  out += String(records);
-
-  out += ",\"channels\":[";
-
-  for(int i=0;i<4;i++) {
-
-    if(i) out += ",";
-
-    out += "{\"available\":";
-    out += available[i] ? "true" : "false";
-
-    out += ",\"amps\":";
-    out += String(amps[i],3);
-
-    out += "}";
-  }
-
-  out += "]}";
-
-  return out;
-}
-
-// Reiniciar el archivo CSV de la web
-void handleResetCSV() {
-
-  // No permitir el borrado sin microSD.
-  if(!sdOK) {
-    server.send(
-      503,
-      "text/plain; charset=utf-8",
-      "microSD no disponible"
-    );
-    return;
-  }
-
-  // Pausar temporalmente el registro.
-  loggingPaused = true;
-
-  // Eliminar el CSV si existe.
-  bool removed =
-    !SD.exists(CSV_PATH) ||
-    SD.remove(CSV_PATH);
-
-  // Crear nuevamente el CSV con sus encabezados.
-  bool created = removed && createCSV();
-
-  // Reiniciar el contador de registros.
-  if(created) records = 0;
-
-  // Reanudar el registro.
-  loggingPaused = false;
-
-  // Informar al navegador del resultado.
-  server.send(
-    created ? 200 : 500,
-    "text/plain; charset=utf-8",
-    created ?
-      "CSV reiniciado. El registro continua." :
-      "No se pudo reiniciar el CSV."
+  crearArchivoSiNoExiste(
+    CSV_FILE,
+    "fecha_chile,fecha_utc,epoch_utc,tiempo_ms,"
+    "Conector_1_A,Conector_2_A,"
+    "Conector_3_A,Conector_4_A"
   );
-}
 
-// Guardar los cambios de la red por la web
-void handleWifiSave() {
+  crearArchivoSiNoExiste(
+    QUEUE_FILE,
+    "fecha_utc,epoch_utc,"
+    "Conector_1_A,Conector_2_A,"
+    "Conector_3_A,Conector_4_A"
+  );
 
-  // Sin microSD no se pueden guardar cambios
-  // de forma persistente.
-  if(!sdOK) {
-    server.send(
-      503,
-      "text/plain; charset=utf-8",
-      "microSD no disponible. No se pueden guardar cambios."
-    );
-    return;
+  // Verifica que el archivo de historial realmente se pueda abrir.
+  File prueba = SD.open(CSV_FILE, FILE_READ);
+
+  if (!prueba) {
+    sdOK = false;
+    Serial.println("[SD] Error verificando CSV");
+    return false;
   }
 
-  // Leer los datos enviados por el formulario.
-  String s = server.arg("ssid");
-  String p = server.arg("password");
+  prueba.close();
 
-  // Comprobar que los datos sean válidos.
-  if(
-    s.length()<1 ||
-    s.length()>32 ||
-    p.length()<8 ||
-    p.length()>63 ||
-    s.indexOf('\n')>=0 ||
-    s.indexOf('\r')>=0 ||
-    p.indexOf('\n')>=0 ||
-    p.indexOf('\r')>=0
+  Serial.println("[SD] Detectada y operativa");
+  return true;
+}
+
+void iniciarSD() {
+
+  SPI.begin(
+    SD_SCK,
+    SD_MISO,
+    SD_MOSI,
+    SD_CS
+  );
+
+  montarSD();
+
+  ultimaRevisionSD = millis();
+}
+
+void revisarSD() {
+
+  unsigned long ahora = millis();
+
+  if (
+    ahora - ultimaRevisionSD <
+    INTERVALO_REVISION_SD
   ) {
-    server.send(
-      400,
-      "text/plain; charset=utf-8",
-      "SSID o contraseña no validos."
-    );
     return;
   }
 
-  // Guardar los nuevos datos en la microSD.
-  if(!saveWiFiConfig(s,p)) {
-    server.send(
-      500,
-      "text/plain; charset=utf-8",
-      "Error al guardar configuracion en microSD."
-    );
-    return;
+  ultimaRevisionSD = ahora;
+
+  if (sdOK) {
+
+    bool presente =
+      (SD.cardType() != CARD_NONE);
+
+    File prueba;
+
+    if (presente) {
+
+      prueba = SD.open(
+        CSV_FILE,
+        FILE_READ
+      );
+
+      presente = (bool)prueba;
+
+      if (prueba) {
+        prueba.close();
+      }
+    }
+
+    if (!presente) {
+
+      sdOK = false;
+
+      Serial.println(
+        "[SD] Desconectada o inaccesible"
+      );
+    }
   }
 
-  // Actualizar las variables del programa.
-  wifiSSID = s;
-  wifiPass = p;
+  if (!sdOK) {
 
-  // Avisar al navegador antes de reiniciar.
-  server.send(
-    200,
-    "text/plain; charset=utf-8",
-    "Configuracion guardada. Reconectate a la nueva red."
-  );
+    Serial.println(
+      "[SD] Intentando recuperar tarjeta..."
+    );
 
-  // Programar el reinicio después de 2,5 segundos.
-  restartAt = millis()+2500;
+    montarSD();
+  }
 }
 
-// Funciones principales del ESP32 (setup y loop)
+// ==========================================================
+// ADS1115
+// ==========================================================
 
-void setup() {
+void iniciarADC() {
 
-  // Iniciar comunicación con el Monitor Serie.
-  Serial.begin(115200);
-  delay(900);
+  Wire.begin(
+    I2C_SDA,
+    I2C_SCL
+  );
 
-  Serial.println();
-  Serial.println("=== MONITOR ESP32 ===");
-
-  // Iniciar I2C:
-  // SDA = GPIO21
-  // SCL = GPIO22
-  Wire.begin(21,22);
-
-  // Buscar los ADS1115 por su dirección I2C.
   ads1OK = ads1.begin(0x48);
   ads2OK = ads2.begin(0x49);
 
-  if(ads1OK) {
+  if (ads1OK) {
 
-    // Esto NO permite superar los límites
-    // absolutos de tensión de cada entrada.
     ads1.setGain(GAIN_ONE);
 
-    // Velocidad de conversión con 860 muestras
-    ads1.setDataRate(RATE_ADS1115_860SPS);
+    ads1.setDataRate(
+      RATE_ADS1115_860SPS
+    );
+
+    Serial.println("[ADC] ADS1 detectado");
+
+  } else {
+
+    Serial.println("[ADC] ADS1 no detectado");
   }
 
-  if(ads2OK) {
+  if (ads2OK) {
+
     ads2.setGain(GAIN_ONE);
-    ads2.setDataRate(RATE_ADS1115_860SPS);
+
+    ads2.setDataRate(
+      RATE_ADS1115_860SPS
+    );
+
+    Serial.println("[ADC] ADS2 detectado");
+
+  } else {
+
+    Serial.println("[ADC] ADS2 no detectado");
   }
 
-  // Informar qué ADC fueron detectados.
-  Serial.printf(
-    "ADS1: %s | ADS2: %s\n",
-    ads1OK ? "OK" : "ERROR",
-    ads2OK ? "OK" : "ERROR"
+  canalDisponible[0] = ads2OK;
+  canalDisponible[1] = ads2OK;
+
+  canalDisponible[2] = ads1OK;
+  canalDisponible[3] = ads1OK;
+}
+
+float medirCorriente(
+  Adafruit_ADS1115& ads,
+  uint8_t canal
+) {
+
+  double suma = 0;
+  double sumaCuadrados = 0;
+
+  for (int i = 0; i < NUM_MUESTRAS; i++) {
+
+    int16_t lectura;
+
+    if (canal == 0) {
+
+      lectura =
+        ads.readADC_Differential_0_1();
+
+    } else {
+
+      lectura =
+        ads.readADC_Differential_2_3();
+    }
+
+    float voltaje =
+      ads.computeVolts(lectura);
+
+    suma += voltaje;
+
+    sumaCuadrados +=
+      (double)voltaje * voltaje;
+  }
+
+  double promedio =
+    suma / NUM_MUESTRAS;
+
+  double varianza =
+    sumaCuadrados / NUM_MUESTRAS -
+    promedio * promedio;
+
+  if (varianza < 0) {
+    varianza = 0;
+  }
+
+  float voltajeRMS =
+    sqrt(varianza);
+
+  return voltajeRMS *
+    AMPERIOS_POR_VOLTIO;
+}
+
+void actualizarCorrientes() {
+
+  // Medicion base y calibracion individual de cada conector.
+  const float FACTOR_CALIBRACION[4] = {
+    0.8602f, 0.8636f, 0.8600f, 0.8558f
+  };
+
+  // Conector 1 = ADS2 A2-A3
+  corriente[0] = ads2OK
+    ? medirCorriente(ads2, 1) * FACTOR_CALIBRACION[0]
+    : NAN;
+
+  // Conector 2 = ADS2 A0-A1
+  corriente[1] = ads2OK
+    ? medirCorriente(ads2, 0) * FACTOR_CALIBRACION[1]
+    : NAN;
+
+  // Conector 3 = ADS1 A2-A3
+  corriente[2] = ads1OK
+    ? medirCorriente(ads1, 1) * FACTOR_CALIBRACION[2]
+    : NAN;
+
+  // Conector 4 = ADS1 A0-A1
+  corriente[3] = ads1OK
+    ? medirCorriente(ads1, 0) * FACTOR_CALIBRACION[3]
+    : NAN;
+
+  // Elimina lecturas residuales inferiores a 0,03 A.
+  for (int i = 0; i < 4; i++) {
+
+    if (
+      isfinite(corriente[i]) &&
+      corriente[i] < 0.030f
+    ) {
+      corriente[i] = 0.0f;
+    }
+  }
+}
+
+// ==========================================================
+// HISTORIAL CSV
+// ==========================================================
+
+void registrarMedicionLocal() {
+
+  if (!sdOK) {
+    return;
+  }
+
+  File archivo = SD.open(
+    CSV_FILE,
+    FILE_APPEND
   );
 
-  // Iniciar bus SPI para la microSD:
-  // SCK   GPIO18
-  // MISO  GPIO19
-  // MOSI  GPIO23
-  // CS    GPIO5
-  SPI.begin(18,19,23,SD_CS);
+  if (!archivo) {
+    return;
+  }
 
-  pinMode(SD_CS,OUTPUT);
-  digitalWrite(SD_CS,HIGH);
+  archivo.print(fechaChile());
+  archivo.print(",");
 
-  // Intentar iniciar la microSD
-  sdOK = SD.begin(
-    SD_CS,
-    SPI,
-    1000000
-  ) && SD.cardType()!=CARD_NONE;
+  archivo.print(fechaUTC());
+  archivo.print(",");
 
-  Serial.println(
-    sdOK ?
-    "microSD detectada" :
-    "microSD no disponible"
-  );
+  if (horaValida()) {
 
-  // Crear el CSV si todavía no existe.
-  if(sdOK) {
-    if(!createCSV()) {
-      Serial.println(
-        "ERROR: no se pudo crear CSV"
+    archivo.print(
+      (uint32_t)time(nullptr)
+    );
+  }
+
+  archivo.print(",");
+  archivo.print(millis());
+
+  for (int i = 0; i < 4; i++) {
+
+    archivo.print(",");
+
+    if (isfinite(corriente[i])) {
+
+      archivo.print(
+        corriente[i],
+        3
       );
     }
   }
 
-  // Cargar las credenciales guardadas.
-  // Si falla, utilizar las predeterminadas.
-  loadWiFiConfig();
+  archivo.println();
+  archivo.close();
 
-  // Configurar el ESP32 como punto de acceso Wi-Fi.
-  // No necesita router.
-  WiFi.mode(WIFI_AP);
+  registrosLocales++;
+}
 
-  bool started = WiFi.softAP(
-    wifiSSID.c_str(),
-    wifiPass.c_str()
+// ==========================================================
+// COLA REMOTA
+// ==========================================================
+
+void agregarMedicionPendiente() {
+
+  if (!sdOK || !horaValida()) {
+    return;
+  }
+
+  File archivo = SD.open(
+    QUEUE_FILE,
+    FILE_APPEND
   );
 
-  Serial.printf(
-    "Wi-Fi: %s (%s)\n",
-    wifiSSID.c_str(),
-    started ? "OK" : "ERROR"
+  if (!archivo) {
+    return;
+  }
+
+  archivo.print(fechaUTC());
+  archivo.print(",");
+
+  archivo.print(
+    (uint32_t)time(nullptr)
   );
 
-  // Información de la Red wifi
-  Serial.print("IP: ");
-  Serial.println(WiFi.softAPIP());
+  for (int i = 0; i < 4; i++) {
 
-  // Página principal del monitor.
-  server.on("/",HTTP_GET,[]() {
+    archivo.print(",");
+
+    if (isfinite(corriente[i])) {
+
+      archivo.print(
+        corriente[i],
+        3
+      );
+    }
+  }
+
+  archivo.println();
+  archivo.close();
+}
+
+bool filaAJSON(
+  String fila,
+  String& json
+) {
+
+  fila.trim();
+
+  String campos[6];
+  int inicio = 0;
+
+  for (int i = 0; i < 5; i++) {
+
+    int separador =
+      fila.indexOf(',', inicio);
+
+    if (separador < 0) {
+      return false;
+    }
+
+    campos[i] = fila.substring(
+      inicio,
+      separador
+    );
+
+    inicio = separador + 1;
+  }
+
+  campos[5] = fila.substring(inicio);
+
+  if (
+    campos[0].length() == 0 ||
+    campos[1].length() == 0
+  ) {
+    return false;
+  }
+
+  json = "{";
+
+  json += "\"dispositivo\":\"";
+  json += escaparJSON(deviceID);
+  json += "\",";
+
+  json += "\"fecha_hora\":\"";
+  json += escaparJSON(campos[0]);
+  json += "\",";
+
+  json += "\"epoch_utc\":";
+  json += campos[1];
+  json += ",";
+
+  for (int i = 0; i < 4; i++) {
+
+    json += "\"conector_";
+    json += String(i + 1);
+    json += "\":";
+
+    String valor = campos[i + 2];
+    valor.trim();
+
+    if (valor.length() > 0) {
+      json += valor;
+    } else {
+      json += "null";
+    }
+
+    if (i < 3) {
+      json += ",";
+    }
+  }
+
+  json += "}";
+
+  return true;
+}
+
+// ==========================================================
+// API HTTPS
+// ==========================================================
+
+bool apiConfigurada() {
+
+  return (
+    apiURL.startsWith("https://") &&
+    apiToken.length() > 0 &&
+    deviceID.length() > 0
+  );
+}
+
+bool enviarJSON(const String& json) {
+
+  if (!wifiConectado()) {
+
+    ultimoEstadoAPI = "Sin Wi-Fi";
+    return false;
+  }
+
+  if (!apiConfigurada()) {
+
+    ultimoEstadoAPI = "Sin configurar";
+    return false;
+  }
+
+  WiFiClientSecure cliente;
+
+  // ATENCION:
+  // Desactiva la verificacion del certificado.
+  // Utilizar solamente durante las pruebas.
+
+  cliente.setInsecure();
+  cliente.setTimeout(8);
+
+  HTTPClient http;
+
+  if (!http.begin(cliente, apiURL)) {
+
+    ultimoEstadoAPI = "Error HTTPS";
+
+    ultimoErrorAPI =
+      "No se pudo iniciar HTTP";
+
+    return false;
+  }
+
+  http.setTimeout(8000);
+
+  http.addHeader(
+    "Content-Type",
+    "application/json"
+  );
+
+  http.addHeader(
+    "Authorization",
+    "Bearer " + apiToken
+  );
+
+  http.addHeader(
+    "X-Device-ID",
+    deviceID
+  );
+
+  int codigo = http.POST(json);
+
+  ultimoHTTP = codigo;
+
+  bool correcto =
+    codigo >= 200 && codigo < 300;
+
+  if (correcto) {
+
+    ultimoEstadoAPI = "Conectado";
+    ultimoErrorAPI = "";
+
+    registrosEnviados++;
+
+    Serial.print("[API] HTTP ");
+    Serial.println(codigo);
+
+  } else {
+
+    ultimoEstadoAPI = "Error";
+
+    String respuesta =
+      http.getString();
+
+    ultimoErrorAPI =
+      "HTTP " + String(codigo) +
+      ": " + respuesta.substring(0, 120);
+
+    Serial.print("[API] ");
+    Serial.println(ultimoErrorAPI);
+  }
+
+  http.end();
+
+  return correcto;
+}
+
+void procesarCola() {
+
+  if (!sdOK) {
+    return;
+  }
+
+  if (!wifiConectado()) {
+    return;
+  }
+
+  if (!apiConfigurada()) {
+    return;
+  }
+
+  File archivo = SD.open(
+    QUEUE_FILE,
+    FILE_READ
+  );
+
+  if (!archivo) {
+    return;
+  }
+
+  uint32_t tamano = archivo.size();
+
+  if (queueOffset > tamano) {
+
+    queueOffset = 0;
+
+    preferences.putUInt(
+      "queue_pos",
+      queueOffset
+    );
+  }
+
+  if (!archivo.seek(queueOffset)) {
+
+    archivo.close();
+    return;
+  }
+
+  const int MAX_ENVIO_LOTE = 12;
+  int enviados = 0;
+
+  while (
+    archivo.available() &&
+    enviados < MAX_ENVIO_LOTE
+  ) {
+
+    uint32_t inicioFila =
+      archivo.position();
+
+    String fila =
+      archivo.readStringUntil('\n');
+
+    uint32_t finFila =
+      archivo.position();
+
+    fila.trim();
+
+    if (fila.length() == 0) {
+
+      queueOffset = finFila;
+
+      preferences.putUInt(
+        "queue_pos",
+        queueOffset
+      );
+
+      continue;
+    }
+
+    if (fila.startsWith("fecha_utc,")) {
+
+      queueOffset = finFila;
+
+      preferences.putUInt(
+        "queue_pos",
+        queueOffset
+      );
+
+      continue;
+    }
+
+    String json;
+
+    if (!filaAJSON(fila, json)) {
+
+      Serial.println(
+        "[API] Fila invalida"
+      );
+
+      queueOffset = inicioFila;
+      break;
+    }
+
+    if (!enviarJSON(json)) {
+
+      queueOffset = inicioFila;
+      break;
+    }
+
+    queueOffset = finFila;
+
+    preferences.putUInt(
+      "queue_pos",
+      queueOffset
+    );
+
+    enviados++;
+
+    delay(1);
+  }
+
+  archivo.close();
+}
+
+// ==========================================================
+// ESTADO JSON
+// ==========================================================
+
+String generarEstadoJSON() {
+
+  String json = "{";
+
+  json += "\"fecha_chile\":\"";
+  json += escaparJSON(fechaChile());
+  json += "\",";
+
+  json += "\"fecha_utc\":\"";
+  json += escaparJSON(fechaUTC());
+  json += "\",";
+
+  json += "\"hora_valida\":";
+  json += horaValida() ? "true" : "false";
+  json += ",";
+
+  json += "\"wifi_conectado\":";
+  json += wifiConectado() ? "true" : "false";
+  json += ",";
+
+  json += "\"wifi_ssid\":\"";
+
+  if (wifiConectado()) {
+    json += escaparJSON(WiFi.SSID());
+  }
+
+  json += "\",";
+
+  json += "\"ip_wifi\":\"";
+
+  if (wifiConectado()) {
+    json += WiFi.localIP().toString();
+  }
+
+  json += "\",";
+
+  json += "\"sd_disponible\":";
+  json += sdOK ? "true" : "false";
+  json += ",";
+
+  json += "\"api_estado\":\"";
+  json += escaparJSON(ultimoEstadoAPI);
+  json += "\",";
+
+  json += "\"api_error\":\"";
+  json += escaparJSON(ultimoErrorAPI);
+  json += "\",";
+
+  json += "\"api_http\":";
+  json += String(ultimoHTTP);
+  json += ",";
+
+  json += "\"registros_locales\":";
+  json += String(registrosLocales);
+  json += ",";
+
+  json += "\"registros_enviados\":";
+  json += String(registrosEnviados);
+  json += ",";
+
+  json += "\"corrientes\":[";
+
+  for (int i = 0; i < 4; i++) {
+
+    json += numeroJSON(corriente[i]);
+
+    if (i < 3) {
+      json += ",";
+    }
+  }
+
+  json += "],";
+
+  json += "\"adc_disponibles\":[";
+
+  for (int i = 0; i < 4; i++) {
+
+    json += canalDisponible[i]
+      ? "true"
+      : "false";
+
+    if (i < 3) {
+      json += ",";
+    }
+  }
+
+  json += "]}";
+
+  return json;
+}
+
+// ==========================================================
+// SERVIDOR WEB V7
+// ==========================================================
+
+void configurarServidor() {
+
+  /*
+    CAMBIO PRINCIPAL DE V7:
+
+    Se elimino por completo permitirAccesoWeb().
+
+    No se comprueba la IP del cliente ni la interfaz
+    de llegada.
+
+    Tampoco se solicita usuario o contrasena HTTP.
+  */
+
+  // PAGINA PRINCIPAL
+
+  server.on("/", HTTP_GET, []() {
+
     server.send_P(
       200,
       "text/html; charset=utf-8",
-      PAGE
+      PAGINA_HTML
     );
   });
 
-  // API que entrega las corrientes en formato JSON.
-  server.on("/api/data",HTTP_GET,[]() {
+  // ESTADO EN TIEMPO REAL
 
-    server.sendHeader(
-      "Cache-Control",
-      "no-store"
-    );
+  server.on("/api/status", HTTP_GET, []() {
 
     server.send(
       200,
       "application/json",
-      jsonData()
+      generarEstadoJSON()
     );
   });
 
-  // API para reiniciar el archivo CSV.
-  server.on(
-    "/api/resetcsv",
-    HTTP_POST,
-    handleResetCSV
-  );
+  // CONFIGURACION ACTUAL
 
-  // API para consultar las credenciales actuales.
-  server.on("/api/wifi",HTTP_GET,[]() {
+  server.on("/api/config", HTTP_GET, []() {
 
-    String s = wifiSSID;
-    String p = wifiPass;
+    String json = "{";
 
-    // Escapar caracteres especiales para JSON.
-    s.replace("\\","\\\\");
-    s.replace("\"","\\\"");
+    json += "\"wifi_ssid\":\"";
+    json += escaparJSON(wifiSSID);
+    json += "\",";
 
-    p.replace("\\","\\\\");
-    p.replace("\"","\\\"");
+    json += "\"api_url\":\"";
+    json += escaparJSON(apiURL);
+    json += "\",";
+
+    json += "\"device_id\":\"";
+    json += escaparJSON(deviceID);
+    json += "\",";
+
+    json += "\"upload_interval\":";
+    json += String(uploadIntervalSeconds);
+
+    json += "}";
 
     server.send(
       200,
       "application/json",
-      "{\"ssid\":\""+s+
-      "\",\"password\":\""+p+"\"}"
+      json
     );
   });
 
-  // API para guardar nuevas credenciales.
+  // GUARDAR WIFI DEL ROUTER
+
   server.on(
-    "/api/wifi",
+    "/api/config/wifi",
     HTTP_POST,
-    handleWifiSave
+    []() {
+
+      String nuevoSSID =
+        server.arg("ssid");
+
+      String nuevaPassword =
+        server.arg("password");
+
+      nuevoSSID.trim();
+
+      if (
+        nuevoSSID.length() == 0 ||
+        nuevoSSID.length() > 32
+      ) {
+
+        server.send(
+          400,
+          "text/plain",
+          "SSID invalido"
+        );
+
+        return;
+      }
+
+      if (nuevaPassword.length() > 63) {
+
+        server.send(
+          400,
+          "text/plain",
+          "Contrasena demasiado larga"
+        );
+
+        return;
+      }
+
+      bool cambioRed =
+        nuevoSSID != wifiSSID;
+
+      wifiSSID = nuevoSSID;
+
+      if (nuevaPassword.length() > 0) {
+
+        wifiPassword = nuevaPassword;
+
+      } else if (cambioRed) {
+
+        wifiPassword = "";
+      }
+
+      guardarConfiguracion();
+
+      server.send(
+        200,
+        "text/plain",
+        "Wi-Fi guardado. Reiniciando ESP32..."
+      );
+
+      delay(500);
+      ESP.restart();
+    }
   );
 
-  // API para descargar el historial CSV.
-  server.on("/download",HTTP_GET,[]() {
+  // GUARDAR API REMOTA
 
-    // Comprobar que el archivo esté disponible.
-    if(
+  server.on(
+    "/api/config/remote",
+    HTTP_POST,
+    []() {
+
+      String nuevaURL =
+        server.arg("url");
+
+      String nuevoID =
+        server.arg("device_id");
+
+      String nuevoToken =
+        server.arg("token");
+
+      String intervalo =
+        server.arg("interval");
+
+      nuevaURL.trim();
+      nuevoID.trim();
+
+      if (
+        nuevaURL.length() > 0 &&
+        !nuevaURL.startsWith("https://")
+      ) {
+
+        server.send(
+          400,
+          "text/plain",
+          "La API debe utilizar HTTPS"
+        );
+
+        return;
+      }
+
+      if (nuevaURL.length() > 500) {
+
+        server.send(
+          400,
+          "text/plain",
+          "URL demasiado larga"
+        );
+
+        return;
+      }
+
+      if (
+        nuevoID.length() == 0 ||
+        nuevoID.length() > 64
+      ) {
+
+        server.send(
+          400,
+          "text/plain",
+          "ID de dispositivo invalido"
+        );
+
+        return;
+      }
+
+      if (nuevoToken.length() > 300) {
+
+        server.send(
+          400,
+          "text/plain",
+          "Token demasiado largo"
+        );
+
+        return;
+      }
+
+      uint32_t nuevoIntervalo =
+        intervalo.toInt();
+
+      if (
+        nuevoIntervalo < 5 ||
+        nuevoIntervalo > 3600
+      ) {
+
+        server.send(
+          400,
+          "text/plain",
+          "Intervalo permitido: 5 a 3600 segundos"
+        );
+
+        return;
+      }
+
+      bool cambioDestino =
+        nuevaURL != apiURL ||
+        nuevoID != deviceID;
+
+      apiURL = nuevaURL;
+      deviceID = nuevoID;
+
+      if (nuevoToken.length() > 0) {
+        apiToken = nuevoToken;
+      }
+
+      uploadIntervalSeconds =
+        nuevoIntervalo;
+
+      guardarConfiguracion();
+
+      if (cambioDestino) {
+
+        queueOffset = 0;
+
+        preferences.putUInt(
+          "queue_pos",
+          queueOffset
+        );
+      }
+
+      ultimoEstadoAPI = "Configurado";
+
+      server.send(
+        200,
+        "text/plain",
+        "Configuracion API guardada"
+      );
+    }
+  );
+
+  // DESCARGAR CSV
+
+  server.on("/download", HTTP_GET, []() {
+
+    if (
       !sdOK ||
-      !SD.exists(CSV_PATH)
+      SD.cardType() == CARD_NONE ||
+      !SD.exists(CSV_FILE)
     ) {
+
+      sdOK = false;
+
       server.send(
         503,
         "text/plain",
-        "CSV no disponible"
+        "MicroSD no disponible; descarga CSV bloqueada"
       );
+
       return;
     }
 
-    // Abrir el archivo para lectura.
-    File f = SD.open(
-      CSV_PATH,
+    File archivo = SD.open(
+      CSV_FILE,
       FILE_READ
     );
 
-    if(!f) {
+    if (!archivo) {
+
+      sdOK = false;
+
       server.send(
-        500,
+        503,
         "text/plain",
-        "No se pudo abrir CSV"
+        "MicroSD desconectada o CSV inaccesible"
       );
+
       return;
     }
 
-    // Indicar al navegador que descargue el archivo.
     server.sendHeader(
       "Content-Disposition",
-      "attachment; filename=\"corriente_conectores.csv\""
+      "attachment; filename=mediciones.csv"
     );
 
-    // Enviar el contenido directamente desde la SD.
-    server.streamFile(f,"text/csv");
+    server.streamFile(
+      archivo,
+      "text/csv"
+    );
 
-    f.close();
+    archivo.close();
   });
 
-  // Iniciar el servidor HTTP.
-  server.begin();
+  // REINICIAR HISTORIAL CSV
 
-  // Realizar las primeras mediciones.
-  sampleChannels();
+  server.on(
+    "/api/resetcsv",
+    HTTP_POST,
+    []() {
 
-  // Guardar el instante inicial.
-  lastSample = millis();
+      if (!sdOK) {
 
-  Serial.println("Servidor iniciado");
-}
+        server.send(
+          500,
+          "text/plain",
+          "MicroSD no disponible"
+        );
 
-// Loop de la ESP32
-void loop() {
+        return;
+      }
 
-  // Procesar las solicitudes HTTP pendientes.
-  server.handleClient();
+      SD.remove(CSV_FILE);
 
-  // Comprobar si hay un reinicio Wi-Fi programado.
-  if(
-    restartAt &&
-    (long)(millis()-restartAt)>=0
-  ) {
-
-    Serial.println(
-      "Reiniciando ESP32 para aplicar Wi-Fi..."
-    );
-
-    delay(100);
-
-    // Reiniciar el microcontrolador.
-    ESP.restart();
-  }
-
-  // Comprobar si transcurrió el intervalo de medición.
-  if(
-    millis()-lastSample >=
-    SAMPLE_INTERVAL
-  ) {
-
-    // Actualizar la referencia temporal.
-    lastSample = millis();
-
-    // Medir los cuatro conectores.
-    sampleChannels();
-
-    // Guardar las lecturas en el CSV.
-    appendCSV();
-
-    // Mostrar las corrientes por el Monitor Serie.
-    for(int i=0;i<4;i++) {
-
-      Serial.printf(
-        "Conector %d: ",
-        i+1
+      crearArchivoSiNoExiste(
+        CSV_FILE,
+        "fecha_chile,fecha_utc,epoch_utc,tiempo_ms,"
+        "Conector_1_A,Conector_2_A,"
+        "Conector_3_A,Conector_4_A"
       );
 
-      if(available[i]) {
+      registrosLocales = 0;
 
-        Serial.printf(
-          "%.3f A RMS\n",
-          amps[i]
-        );
+      server.send(
+        200,
+        "text/plain",
+        "Historial CSV reiniciado"
+      );
+    }
+  );
+
+  // RUTAS DESCONOCIDAS
+
+  server.onNotFound([]() {
+
+    server.send(
+      404,
+      "text/plain",
+      "Ruta no encontrada"
+    );
+  });
+
+  server.begin();
+
+  Serial.println("[WEB] Servidor iniciado");
+  Serial.println("[WEB] Sin autenticacion");
+  Serial.println("[WEB] Sin filtro de IP");
+}
+
+// ==========================================================
+// SETUP
+// ==========================================================
+
+void setup() {
+
+  Serial.begin(115200);
+  delay(1000);
+
+  Serial.println();
+  Serial.println("================================");
+  Serial.println(" MONITOR DE CORRIENTE ESP32 V7");
+  Serial.println("================================");
+
+  cargarConfiguracion();
+
+  iniciarADC();
+
+  iniciarSD();
+
+  iniciarWiFi();
+
+  iniciarNTP();
+
+  configurarServidor();
+
+  ultimaMedicion = millis();
+  ultimoEnvio = millis();
+  ultimoIntentoWiFi = millis();
+  ultimaRevisionHora = millis();
+
+  Serial.println();
+  Serial.println("[SISTEMA] Listo");
+  Serial.println("[WEB] http://192.168.4.1");
+}
+
+// ==========================================================
+// LOOP
+// ==========================================================
+
+void loop() {
+
+  server.handleClient();
+
+  mantenerWiFi();
+  mantenerHora();
+  revisarSD();
+
+  unsigned long ahora = millis();
+
+  // MEDICIONES LOCALES
+
+  if (
+    ahora - ultimaMedicion >=
+    INTERVALO_MEDICION
+  ) {
+
+    ultimaMedicion = ahora;
+
+    actualizarCorrientes();
+
+    registrarMedicionLocal();
+
+    Serial.println();
+    Serial.println("-------- MEDICIONES --------");
+
+    Serial.print("Fecha: ");
+    Serial.println(fechaChile());
+
+    for (int i = 0; i < 4; i++) {
+
+      Serial.print("Conector ");
+      Serial.print(i + 1);
+      Serial.print(": ");
+
+      if (isfinite(corriente[i])) {
+
+        Serial.print(corriente[i], 3);
+        Serial.println(" A");
 
       } else {
 
-        Serial.println(
-          "ADS no disponible"
-        );
+        Serial.println("ADC no disponible");
+      }
+    }
+
+    Serial.println("----------------------------");
+
+    if (horaValida()) {
+
+      uint64_t bloque =
+        (uint64_t)time(nullptr) /
+        uploadIntervalSeconds;
+
+      if (bloque != ultimoBloqueRemoto) {
+
+        ultimoBloqueRemoto = bloque;
+
+        agregarMedicionPendiente();
       }
     }
   }
+
+  // ENVIO REMOTO
+
+  if (
+    ahora - ultimoEnvio >=
+    uploadIntervalSeconds * 1000UL
+  ) {
+
+    ultimoEnvio = ahora;
+
+    procesarCola();
+  }
+
+  delay(1);
 }
