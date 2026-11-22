@@ -17,5 +17,7 @@
 
 
 - El primer diseño en 3D presentó una desalineación entre los agujeros y la posición de los módulos ADS1115
-- <img width="1600" height="739" alt="image" src="https://github.com/user-attachments/assets/828217a2-79ef-4b66-b49c-1604a05f97de" />
-- En el segundo diseño, se arregló la orientación de estos agujeros, no obstante no eran lo suficientemente grandes para algunos conectores en particular.
+<img width="1600" height="739" alt="image" src="https://github.com/user-attachments/assets/828217a2-79ef-4b66-b49c-1604a05f97de" />
+- En el segundo diseño, se arregló la orientación de estos agujeros, no obstante no eran lo suficientemente grandes para algunos conectores en particular
+<img width="1280" height="960" alt="image" src="https://github.com/user-attachments/assets/272392f6-9b80-428c-b57b-78c45254fae4" />
+
