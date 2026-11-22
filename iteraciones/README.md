@@ -43,7 +43,8 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 
 ### Hardware
 **De v1 a v2:**
-- Adición de 4 resistencias de 100 KOHM
+- Adición de 4 resistencias de 100 KOHM (soluciona detección de ruido)
+- Alargador de cables separados (garantiza lectura universal de objetos de cualquier tipo de cable)
 
 **De v2 a v3:**
 - Cambio: [Descripción]
@@ -52,7 +53,7 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 
 ### Software
 **De v1 a v2:**
-- Conexión a nube Supabase
+- Conexión a nube Supabase (Railway presentaba fallas significativas)
   
 **De v2 a v3:**
 - [Cambios principales]
@@ -85,6 +86,4 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 
 ## Lecciones aprendidas
 
-1. 
-2. 
-3. 
+1. El modelaje 3D requiere mucha revisión antes de mandar a imprimir. Pequeños desvíos de diseño de tamaño minúsculo afectan completamente a la conexión con el prototipo
