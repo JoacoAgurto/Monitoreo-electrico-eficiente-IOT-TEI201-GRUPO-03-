@@ -25,11 +25,11 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 
 ### Hardware
 **Agregado:**
-- 4 resistencias de 100 KOHM
+- 4 resistencias de 100 KΩ
+- Alargador casero de cables separados, permitiendo conexión con cualquier objeto eléctrico de cualquier tipo de cable.
 
-**Modificado:**
-- [Cambio 1] - Razón: [Justificación]
-- [Cambio 2] - Razón: [Justificación]
+**Mejora principal**
+- Las resistencias permiten que el sistema no tenga problemas con la detección de ruido y corriente real. El alargador casero soluciona la dependencia del uso de cables separados para la lectura verídica del lector de corriente.
 
 ### Software
 
@@ -39,7 +39,7 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 
 **Mejora principal**
 - Conexión a nube Supabase
-- - Creación de página web que contiene varios elementos de información, como la energía total consumida en un periodo determinado, el costo estimado en $, el promedio diario de kWh, como también la creación de gráficos de la evolución del consumo y comparación mensual.
+- Creación de página web que contiene varios elementos de información, como la energía total consumida en un periodo determinado, el costo estimado en $, el promedio diario de kWh, como también la creación de gráficos de la evolución del consumo y comparación mensual.
 
 ### Diseño Mecánico
 - Primer diseño de encapsulado en Fusion 360
@@ -54,4 +54,4 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 ✅ [Lectura de Corriente]  
 ✅ [Traspaso de lectura a Kwh y pesos chilenos]  
 ✅ [Detección de ruido: Solucionado]  
-⚠️ [Función 4 - Legibilidad de la página web]
+✅ [Función 4 - Legibilidad de la página web]
