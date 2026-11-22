@@ -23,13 +23,15 @@ Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la can
 
 ## Resultados Clave
 
-| Medida | Resultado | Origen |
+| Medida | Resultado |
 |---|---|---|
-| Lectura de corriente constante y sin interrupciones |  |  |
-| Error de detección de ruido |  |  |
-| Capacidad de predecir gasto en kWH |  | Real, simulación |
-| Gráficos de consumo frente a tiempo legibles | | Real, simulación |
-| Pruebas con 5 usuarios | Ver `testing/` | |
+| Lectura de corriente constante y sin interrupciones | Completado |
+| Error de detección de ruido | Solucionado con aplicación de resistencias |  
+| Capacidad de predecir gasto en kWH | Completado |
+| Gráficos de consumo frente a tiempo legibles | Completado |
+
+<img width="1392" height="907" alt="image" src="https://github.com/user-attachments/assets/359c8ee2-3c11-4921-9bc8-679a2cbe924b" />
+
 
 ---
 
