@@ -39,6 +39,7 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 
 **Mejora principal**
 - Conexión a nube Supabase
+- - Creación de página web que contiene varios elementos de información, como la energía total consumida en un periodo determinado, el costo estimado en $, el promedio diario de kWh, como también la creación de gráficos de la evolución del consumo y comparación mensual.
 
 ### Diseño Mecánico
 - Primer diseño de encapsulado en Fusion 360
