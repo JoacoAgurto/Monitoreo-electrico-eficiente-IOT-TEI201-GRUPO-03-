@@ -44,12 +44,6 @@ Esta carpeta contiene toda la documentación técnica del hardware del proyecto,
 
 ## Especificaciones técnicas
 
-| Dato | Valor |
-|---|---|
-| Alimentación de la Pi | 5 V y 3 A por USB-C |
-| Alimentación del motor | 12 V |
-| Corriente del motor | 0.3 A, ajustada con Vref de 0.24 V |
-
 ## Diseño para la reparación
 
 - Aquí se mmenciona como se pueden cambiar componentes para reparación
