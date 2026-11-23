@@ -24,7 +24,7 @@ Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la can
 ## Resultados Clave
 
 | Medida | Resultado |
-|---|---|---|
+|---|---|
 | Lectura de corriente constante y sin interrupciones | Completado |
 | Error de detección de ruido | Solucionado con aplicación de resistencias |  
 | Capacidad de predecir gasto en kWH | Completado |
@@ -44,7 +44,6 @@ Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la can
 ├── documentacion/    # Reportes y presentación
 └── iteraciones/      # Historial de versiones
 ```
-
 ---
 
 ##  Inicio Rápido
@@ -52,43 +51,12 @@ Este proyecto provee un sistema de monitoreo eléctrico eficiente que lee la can
 ### Requisitos Previos
 - Arduino IDE 2.x
 - Fusion 360 para abrir los archivos `.f3d`
-- 
+- Hardware arduino (ver 'hardware/bom/')
 
 ### Instalación
 1. Clonar el repositorio
 2. Instalar librerías (ver `software/librerias/`)
 3. Cargar código en ESP32/Arduino
-4. [Pasos adicionales]
-
----
-
-##  Checklist de Entrega
-
-### Hardware ✓
-- [ ] Esquema del circuito (Fritzing/Wokwi)
-- [ ] BOM completo
-- [ ] Fotos de alta resolución
-
-### Software ✓
-- [ ] Código comentado
-- [ ] Librerías documentadas
-- [ ] Manual de instalación
-
-### Diseño 3D ✓
-- [ ] Archivos Fusion 360 (.f3d) con TODOS los componentes
-- [ ] Renders de alta calidad (1+ ángulos)
-- [ ] Planos técnicos
-
-### Testing ✓
-- [ ] Reporte de testing con usuarios (mín. 5)
-- [ ] Evidencias fotográficas/videos
-- [ ] Datos cuantitativos
-
-### Documentación ✓
-- [ ] Reporte final (máx. 15 páginas)
-- [ ] Presentación (10 min)
-
----
 
 
 ---
