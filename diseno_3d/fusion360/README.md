@@ -4,7 +4,7 @@
 |---|---|
 | Encapsulado_Caja.step | Modelo de la caja en formato .STEP |
 | Encapsulado_Tapa.step | Modelo de la tapa en formato .STEP |
-| Modelado Encapsulado.zip (si no funciona, click en el siguiente link: https://a360.co/4l5qgsX | Carpeta comprimida conteniendo Modelo Fusion 360 con sistema Arduino integrado completamente en el encapsulado 3D, con historial incluido. Los componentes fueron descargados de terceros. Están citados en [FUENTES.md] |
+| https://a360.co/4l5qgsX | Archivo que lleva al Modelo Fusion 360 con sistema Arduino integrado completamente en el encapsulado 3D, con historial incluido. Los componentes fueron descargados de terceros. Están citados en [FUENTES.md] |
 
 ## Versiones
 
