@@ -10,4 +10,5 @@ El mismo contenido está en [bom_completo.xlsx], que se abre directo en Excel y 
 | Módulo Ads1115 | 2 | 5990 | 16970 | Leen la información del conector y lo traducen para la ESP32 |
 |Placa ESP32|1|2736|2736|Procesar datos de corriente|
 |Resistores|4|1118|4472|Absorber ruido eléctrico|
-| | **Total** | | **33022** |
+|Resistores|1 (viene en un pack de 50)|4990|4990|Indicador de encendido/apagado del sistema|
+| | **Total** | | **38012** |
