@@ -1,17 +1,5 @@
 # Diseño 3D - Documentación
 
-## Gemelo 3D
-
-| Componente | Estado en el ejemplo |
-|---|---|
-| 1 (especificar cada pieza del hardware) | especificar posición y tamaño |
-| 2 |  |
-| 3 |  |
-| 4 |  |
-| 5 |  |
-
----
-
 ## Carpetas
 
 #### `fusion360/`
@@ -25,18 +13,5 @@ Planos técnicos con vistas y cotas
 
 ---
 
-## Especificaciones
-
-| Dato | Valor |
-|---|---|
-| Software | Autodesk Fusion 360 |
-| Unidades | Milímetros |
-| Escala | 1 a 1 |
-| Dimensiones externas | 170 x 120 x 60 mm |
-| Material | PLA, pared de 2.4 mm |
-| Tolerancia | 0.2 mm general y 0.3 mm en el ajuste de la tapa |
-
----
-
 ## Funcionalidad del Encapsulado
-- bla bla bla
+- El encapsulado es un modelo simple con el simple objetivo de proteger el sistema arduino de fuerzas externas. Contiene espacios / agujeros que permiten la conexión electrónica.
