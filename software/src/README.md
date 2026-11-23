@@ -4,7 +4,7 @@
 
 Código fuente del sistema de monitoreo de corriente eléctrica basado en ESP32. Incluye la adquisición y procesamiento de mediciones, servidor web local, almacenamiento de registros y comunicación con Supabase.
 
-## Archivos principales
+## Archivos principales ESP32
 
 ### `main.ino`
 
@@ -30,6 +30,34 @@ Contiene el código de la interfaz web alojada en el ESP32.
 - Opciones para mostrar u ocultar gráficos.
 - Consulta y descarga de registros CSV.
 - Configuración de parámetros del sistema.
+
+## Archivos principales web
+
+### `monitor_energia.html`
+
+Interfaz web que se conecta a la base de datos de supabase.
+
+**Funciones principales:**
+- Obtiene el valor de lo que se consume y cuanto vale.
+- Deja buscar por periodos de tiempo el consumo.
+- Calcula el consumo promedio.
+- Visualiza la cantidad de energía obtenida por conector.
+
+## Archivos principales database (Supabase)
+
+### `crear_tabla_mediciones.sql`
+
+Código para crear las tablas de mediciones.
+
+### `formatear_mediciones.sql`
+
+Código para formatear las mediciones de las tablas.
+
+### `index.ts`
+
+Edge function, función que utiliza la base de datos para recibir las mediciones del ESP32.
+
+
 
 ## Comunicaciones
 
