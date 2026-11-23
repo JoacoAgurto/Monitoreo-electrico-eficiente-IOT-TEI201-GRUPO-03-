@@ -37,6 +37,7 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 **Bugs corregidos:**
 - [Bug 1 de v1]
 - Railway presentó problemas para crear una cuenta, por lo cual se prefirio moverse a otra plataforma como Supabase
+- No obstante, es importante considerar que este cambio nos genera un par de restricciones en el manejo de la página web y la comunicación con el ESP32. Como en Railway las funciones eran de pago y las de Supabase eran gratuitas, nuestro software está limitado de tal manera que la información se encuentra en el computador y además en un dispositivo móvil. No hemos logrado unir ambos planillas de información en una sola.
 
 **Mejora principal**
 - Conexión a nube Supabase
