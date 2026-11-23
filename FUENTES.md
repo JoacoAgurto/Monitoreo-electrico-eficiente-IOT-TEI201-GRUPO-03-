@@ -28,3 +28,5 @@ El archivo `Modelado Encapsulado.zip` incluye modelos de componentes descargados
 |Diodo Led Color Rojo  |https://grabcad.com/library/diodo-led-color-rojo-1  |Ad Astra |
 
 ## Uso de Inteligencia Artificial
+
+Fue utilisada la inteligencia Artificial Chat GPT al momento del desarroyo del modelo 3D como fuente de informacion respecto a como utilizar la herramienta tanto Fusion 360 como Kikad, Ademas de brindar apoyo al momento de la busqueda de componentes.
