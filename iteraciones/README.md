@@ -24,6 +24,7 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 **Mejoras implementadas:**
 - Se agregaron 4 resistencias de 100 KOHM, solucionando el problema del sistema en su incapacidad de diferenciar ruido con corriente real.
 - Se utilizó un alargador casero de cables separados. Así, el lector de corriente es capaz de medir el alargador y la corriente proveniente de cualquier objeto con cualquier tipo de cable.
+- Se agregó un LED para indicar cuando el dispositivo está encendido.
 
 ### Versión 3 (Iteración 3) - Versión Final
 **Fecha:** [XX/XX/2025]  
