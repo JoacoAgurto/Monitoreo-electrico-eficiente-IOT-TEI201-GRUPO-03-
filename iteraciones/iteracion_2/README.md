@@ -56,4 +56,4 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 ✅ [Lectura de Corriente]  
 ✅ [Traspaso de lectura a Kwh y pesos chilenos]  
 ✅ [Detección de ruido: Solucionado]  
-✅ [Función 4 - Legibilidad de la página web]
+- (+/-) [Función 4 - Legibilidad de la página web]
