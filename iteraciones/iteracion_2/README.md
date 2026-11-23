@@ -27,6 +27,7 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 **Agregado:**
 - 4 resistencias de 100 KΩ
 - Alargador casero de cables separados, permitiendo conexión con cualquier objeto eléctrico de cualquier tipo de cable.
+- Luz LED
 
 **Mejora principal**
 - Las resistencias permiten que el sistema no tenga problemas con la detección de ruido y corriente real. El alargador casero soluciona la dependencia del uso de cables separados para la lectura verídica del lector de corriente.
