@@ -2,15 +2,15 @@
 
 ## Librerías de software
 
-| Librería | Dónde se usa | Licencia | Sitio |
-|---|---|---|---|
-|  |  | |  |
-|  |  | |  |
-|  |  | |  |
-|  |  | |  |
-|  |  | |  |
-|  |  | |  |
-|  |  | |  |
+| Librería | Para qué |
+|---|---|
+| <Wire.h> | Permite la comunicación I2C entre ESP32 y ADS1115. |
+| <SPI.h> | Permite la cmunicación SPI con la microSD. |
+| <SD.h> | Lectura y escritura de archivos en la microSD. |
+| <WiFi.h> | Crea la red Wi-Fi del ESP32. |
+| <WebServer.h> | Servidor HTTP para mostrar la página web. |
+| <Adafruit_ADS1X15.h> | Control de los convertidores ADS1115. |
+| <math.h> | Librería de funciones matemáticas, como la raíz cuadrada. |
 
 ## Modelos 3D de terceros
 
@@ -29,4 +29,5 @@ El archivo `Modelado Encapsulado.zip` incluye modelos de componentes descargados
 
 ## Uso de Inteligencia Artificial
 
-Fue utilisada la inteligencia Artificial Chat GPT al momento del desarroyo del modelo 3D como fuente de informacion respecto a como utilizar la herramienta tanto Fusion 360 como Kikad, Ademas de brindar apoyo al momento de la busqueda de componentes.
+Fue utilizada la inteligencia Artificial Chat GPT al momento del desarroyo del modelo 3D como fuente de informacion respecto a como utilizar la herramienta tanto Fusion 360 como Kikad, Ademas de brindar apoyo al momento de la busqueda de componentes.
+También se utilizó para la creación general del código, específicamente la creación de la página web (organizando su arquitectura y presentación de datos), como también el loop de lectura de corriente.
