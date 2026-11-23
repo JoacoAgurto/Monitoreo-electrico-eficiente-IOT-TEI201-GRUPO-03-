@@ -113,7 +113,7 @@ Datos cuantitativos recolectados
 
 | Prueba | Resultado | 
 |---|---|
-| Conexión de prototipo con objeto | 100 % |
-| Lectura correcta de corriente | 100 % |
-| Exactitud de datos legibles en gráficos | 86.9 % |
-| Facilidad de lectura por parte del usuario| 19 de 20 |
+| Conexión de prototipo con objeto | |
+| Lectura correcta de corriente | |
+| Exactitud de datos legibles en gráficos |  |
+| Facilidad de lectura por parte del usuario|  |
