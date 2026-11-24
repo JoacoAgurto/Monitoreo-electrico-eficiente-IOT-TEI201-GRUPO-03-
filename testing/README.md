@@ -107,6 +107,7 @@ Datos cuantitativos recolectados
 ## Métricas de Evaluación
 
 ### Usabilidad
-- Facilidad de uso (1-5)
-- Claridad de funcionamiento (1-5)
-- Satisfacción general (1-5)
+- Facilidad de uso (1-7)
+- Claridad de funcionamiento (1-7)
+- Satisfacción general (1-7)
+- Recomienda uso del sistema en hogar (1-7)
