@@ -55,9 +55,12 @@ Datos cuantitativos recolectados
 2.5 *Acceso a la plataforma web*
 
 - Se proporcionará URL de acceso y contraseña de acceso.
+- URL: https://incandescent-duckanoo-ab6d43.netlify.app/
+- WiFi: corriente123
+- Página web server: 192.168.4.1
+- Clave pública de la API: sb_publishable_oGaFO1dxPjzGc7TyyBGqKA_nzjv1ixg
 
 - Posteriormente, se realizará una explicación breve de los elementos presentes en la plataforma:
-
 - Valor de corriente medida.
 - Consumo estimado.
 - Costo estimado.
@@ -67,8 +70,7 @@ Datos cuantitativos recolectados
 **3. Fase de prueba de uso**
 3.1 *Actividad principal*
 
-- El participante deberá operar el sistema de manera autónoma.
-- Las tareas consisten en:
+- El participante deberá operar el sistema de manera autónoma. Las tareas consisten en:
 - Realizar la conexión del sensor.
 - Preparar el dispositivo eléctrico para la medición.
 - Acceder a la plataforma web.
@@ -97,6 +99,7 @@ Datos cuantitativos recolectados
 - ¿Qué dificultades encontró durante el uso?
 - ¿Qué mejoras incorporaría al sistema?
 - ¿Utilizaría este sistema en su hogar para controlar sus gastos eléctricos?
+  
 ---
 
 ## Métricas de Evaluación
