@@ -9,7 +9,7 @@ El mismo contenido está en [bom_completo.xlsx], que se abre directo en Excel y 
 | Conector TRRS 3,5 mm profesional de salida de audio TRRS de 3,5 mm | 1x5 | 2457| 2457 | Actúa como la conexión para el sensor de corriente |
 | Módulo Ads1115 | 2 | 5990 | 16970 | Leen la información del conector y lo traducen para la ESP32 |
 |Placa ESP32|1|2736|2736|Procesar datos de corriente|
-|Resistores|4|1118|4472|Absorber ruido eléctrico|
+|Resistores|4 100kΩ + 1 kΩ| 1118 + 2900| 7372 |Absorber ruido eléctrico|
 |Diodo LED roja |1 (viene en un pack de 50)|4990|4990|Indicador de encendido/apagado del sistema|
-|Batería portátil|1 |19980|19980|Alimentación energética para el sistema|
-| | **Total** | | **57992** |
+|Batería portátil| 1 |19980|19980|Alimentación energética para el sistema|
+| | **Total** | | **60892** |
