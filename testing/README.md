@@ -34,7 +34,7 @@ Datos cuantitativos recolectados
 - El responsable de la prueba dará la bienvenida al participante y explicará que se está evaluando el prototipo, no las capacidades del usuario.
 
 2.2 *Presentación del proyecto*
--Se explicará brevemente que el sistema permite monitorear el consumo eléctrico de un dispositivo en tiempo real y estimar el costo asociado de acuerdo con una tarifa eléctrica previamente configurada. El objetivo es proporcionar información que ayude a los usuarios a comprender y gestionar mejor su consumo energético.
+- Se explicará brevemente que el sistema permite monitorear el consumo eléctrico de un dispositivo en tiempo real y estimar el costo asociado de acuerdo con una tarifa eléctrica previamente configurada. El objetivo es proporcionar información que ayude a los usuarios a comprender y gestionar mejor su consumo energético.
 
 2.3 *Explicación del contexto de uso*
 - Se indicará que el sistema debe utilizarse para monitorear un artefacto eléctrico específico conectado a una fuente de alimentación.
