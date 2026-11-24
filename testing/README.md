@@ -45,12 +45,12 @@ Datos cuantitativos recolectados
 
 - El evaluador realizará una demostración breve del funcionamiento:
 
--Conectar el sensor de corriente al conector TRRS.
--Identificar el conductor por donde circula la corriente del dispositivo a medir.
--Posicionar correctamente el sensor alrededor del conductor.
--Conectar el dispositivo eléctrico al alargador preparado para la medición.
--Verificar que el módulo esté energizado.
--Acceder a la plataforma web.
+- Conectar el sensor de corriente al conector TRRS.
+- Identificar el conductor por donde circula la corriente del dispositivo a medir.
+- Posicionar correctamente el sensor alrededor del conductor.
+- Conectar el dispositivo eléctrico al alargador preparado para la medición.
+- Verificar que el módulo esté energizado.
+- Acceder a la plataforma web.
 
 2.5 *Acceso a la plataforma web*
 
@@ -61,6 +61,7 @@ Datos cuantitativos recolectados
 - Clave pública de la API: sb_publishable_oGaFO1dxPjzGc7TyyBGqKA_nzjv1ixg
 
 - Posteriormente, se realizará una explicación breve de los elementos presentes en la plataforma:
+  
 - Valor de corriente medida.
 - Consumo estimado.
 - Costo estimado.
@@ -68,6 +69,7 @@ Datos cuantitativos recolectados
 - Historial o visualizaciones disponibles.
 
 **3. Fase de prueba de uso**
+
 3.1 *Actividad principal*
 
 - El participante deberá operar el sistema de manera autónoma. Las tareas consisten en:
