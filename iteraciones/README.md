@@ -14,7 +14,7 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 
 **Características:**
 - El sistema es a base de conexiones de arduino / sensores montados en un protoboard, capaces de leer corriente eléctrica y mandar esos datos a una página web.
-- El sistema es muy dependiente por el hecho de que los cables de conexión al sistema sean separados y no juntos.
+- El sistema es muy dependiente por el hecho de que los cables de conexión al sistema sean separados y no juntos. Eso significa que no puede medir la corriente de cualquier objeto, debido a que la mayoría de los cables son juntos.
 - Para mejor usabilidad, es mejor implementar una nube para así ver el sistema de manera remota.
 
 ### Versión 2 (Iteración 2) - Primera Mejora
@@ -23,8 +23,10 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 
 **Mejoras implementadas:**
 - Se agregaron 4 resistencias de 100 KOHM, solucionando el problema del sistema en su incapacidad de diferenciar ruido con corriente real.
+- El código de la ESP32 ahora es capaz de convertir la corriente en KWh y $ en tiempo real según una tarifa especificada por el usuario. También permite guardar los datos en CSV, como también comparar consumo por días o meses, posibilitando decisiones más informadas.
 - Se utilizó un alargador casero de cables separados. Así, el lector de corriente es capaz de medir el alargador y la corriente proveniente de cualquier objeto con cualquier tipo de cable.
 - Se agregó un LED para indicar cuando el dispositivo está encendido.
+- El uso de Supabase permite visualizar los datos en una página web de manera fácil y legible
 
 ### Versión 3 (Iteración 3) - Versión Final
 **Fecha:** [XX/XX/2025]  
@@ -46,6 +48,7 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 **De v1 a v2:**
 - Adición de 4 resistencias de 100 KOHM (soluciona detección de ruido)
 - Alargador de cables separados (garantiza lectura universal de objetos de cualquier tipo de cable)
+- Diodo LED rojo (permite al usuario conocer si el dispositivo está conectado y encendido para su funcionamiento)
 
 **De v2 a v3:**
 - Cambio: [Descripción]
@@ -76,8 +79,9 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
    - Acción tomada: Usar Supabase
 
 ### Feedback del Avance #2 → Cambios en v3
-1. [Comentario profesor/ayudante]
-   - Acción tomada: [Descripción]
+1. [Comentario profesor/ayudante]:
+   - ¿Por qué los datos se ven en el computador y además en el celular? ¿No sería más simple que toda la arquitectura del software y los datos importantes de la página web se vean solamente en un dispositivo?
+   - Acción tomada: Averiguar si Supabase permite sintetizar y poner la información en un sólo dispositivo para el funcionamiento correcto del dispositivo, dentro de sus límites de uso gratuito. Railway era capaz de hacer eso, pero sus errores relacionados a inicio de sesión no permitió más sus opciones adicionales de pago nos complicó.
 
 ### Feedback de Usuarios → Cambios en v3
 1. [Comentario común de usuarios]
@@ -88,3 +92,4 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 ## Lecciones aprendidas
 
 1. El modelaje 3D requiere mucha revisión antes de mandar a imprimir. Pequeños desvíos de diseño de tamaño minúsculo afectan completamente a la conexión con el prototipo
+2. Es importante que la información de la nube Supabase sea accesible en un sólo dispositivo en vez de dos. Facilita mucho más su uso para el futuro usuario.
