@@ -28,18 +28,6 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 - Se agregó un LED para indicar cuando el dispositivo está encendido.
 - El uso de Supabase permite visualizar los datos en una página web de manera fácil y legible
 
-### Versión 3 (Iteración 3) - Versión Final
-**Fecha:** [XX/XX/2025]  
-**Estado:** Prototipo de alta resolución
-
-**Mejoras finales:**
-- [Mejora 1]
-- [Mejora 2]
-
-**Resultado:**
-- Sistema robusto y probado
-- Listo para piloto en terreno
-
 ---
 
 ## Justificación de Cambios
@@ -50,24 +38,13 @@ Esta carpeta documenta la evolución del prototipo a través de las diferentes v
 - Alargador de cables separados (garantiza lectura universal de objetos de cualquier tipo de cable)
 - Diodo LED rojo (permite al usuario conocer si el dispositivo está conectado y encendido para su funcionamiento)
 
-**De v2 a v3:**
-- Cambio: [Descripción]
-- Razón: [Justificación técnica]
-- Impacto: [Mejora cuantitativa]
-
 ### Software
 **De v1 a v2:**
 - Conexión a nube Supabase (Railway presentaba fallas significativas)
-  
-**De v2 a v3:**
-- [Cambios principales]
 
 ### Diseño 3D
 **De v1 a v2:**
-- [Cambios en encapsulado]
-
-**De v2 a v3:**
-- [Cambios finales]
+- Se realizó un segundo modelaje, ya que el primero tenía mal situado los puertos a los conectores TRRS. Se agregaron pequeños agujeros en la tapa para el uso de tornillos, así manteniendo la caja cerrada y el sistema arduino estable. Estos tornillos también se pueden desatornillar en el caso que haya que hacer un cambio/reparación en el sistema.
 
 ---
 
