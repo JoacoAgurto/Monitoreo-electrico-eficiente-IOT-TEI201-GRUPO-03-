@@ -34,5 +34,5 @@ El archivo `Modelado Encapsulado.zip` incluye modelos de componentes descargados
 
 ## Uso de Inteligencia Artificial
 
-Fue utilizada la inteligencia Artificial Chat GPT al momento del desarroyo del modelo 3D como fuente de informacion respecto a como utilizar la herramienta tanto Fusion 360 como Kikad, Ademas de brindar apoyo al momento de la busqueda de componentes.
-También se utilizó para la creación general del código, específicamente la creación de la página web (organizando su arquitectura y presentación de datos), como también el loop de lectura de corriente.
+Fue utilizada la inteligencia Artificial Chat GPT al momento del desarrollo del modelo 3D como fuente de información respecto a cómo utilizar la herramienta tanto Fusion 360 como Kikad, además de brindar apoyo al momento de la búsqueda de componentes.
+Adicionalmente se le pidieron instrucciones para ir generando el código a base de lo que se necesitaba y orientándolo en todo el proceso.
