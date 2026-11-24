@@ -24,26 +24,12 @@ Esta carpeta contiene toda la documentación técnica del hardware del proyecto,
 
 ### Montaje mecánico
 
-1. 
-2. 
-3. 
-4. 
+1. Colocar protoboard dentro del encapsulado, alineando las salidas de conectores/módulos con los respectivos puertos
+2. Cerrar encapsulado con caja y atornillar desde la parte inferior hasta la parte superior
+3. Añadir batería portátil y amarrarla, utilizando los espacios triangulares de la caja como soporte
 
 ### Montaje eléctrico
 
-1. 
-2. 
-3. 
-4. 
-### Precauciones
-
-- 
-- 
-- 
-- 
-
-## Especificaciones técnicas
-
-## Diseño para la reparación
-
-- Aquí se mmenciona como se pueden cambiar componentes para reparación
+1. Instalar cada componente siguiendo el esquema (en carpeta esquemas)
+2. Para inicializar, conectar batería con puerto de alimentación a la ESP32
+3. El lector de corriente va conectado a cualquiera de los 4 puertos de los conectores TRRS
