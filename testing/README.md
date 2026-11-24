@@ -97,7 +97,6 @@ Datos cuantitativos recolectados
 - ¿Qué dificultades encontró durante el uso?
 - ¿Qué mejoras incorporaría al sistema?
 - ¿Utilizaría este sistema en su hogar para controlar sus gastos eléctricos?
-- 
 ---
 
 ## Métricas de Evaluación
@@ -106,14 +105,3 @@ Datos cuantitativos recolectados
 - Facilidad de uso (1-5)
 - Claridad de funcionamiento (1-5)
 - Satisfacción general (1-5)
-
----
-
-## Resumen de resultados
-
-| Prueba | Resultado | 
-|---|---|
-| Conexión de prototipo con objeto | |
-| Lectura correcta de corriente | |
-| Exactitud de datos legibles en gráficos |  |
-| Facilidad de lectura por parte del usuario|  |
